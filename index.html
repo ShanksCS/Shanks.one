@@ -1,49 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>hayhurst.me</title>
-    <link rel="stylesheet" href="assets/css/stylesheet.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="icon" type="image/ico" href="assets/img/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Charlie Shanks — Links</title>
+  <meta name="description" content="Graduate in Cyber Security with First Class Honours from Leeds Beckett University. Passionate about digital security and technology, with a creative side through music." />
+  <meta name="theme-color" content="#0b0b0b" />
+  <style>
+    :root { --bg:#0b0b0b; --fg:#fff; --muted:#aaa; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg); color: var(--fg); display:flex; align-items:center; justify-content:center; overflow:hidden;
+    }
+    .container {
+      position: relative; z-index: 1; width: 100%; max-width: 500px; padding: 2rem; text-align:center;
+      opacity: 0; transform: translateY(20px); transition: opacity 1s ease, transform 1s ease;
+    }
+    .container.loaded { opacity:1; transform: translateY(0); }
+    .avatar {
+      width: 100px; height: 100px; margin: 0 auto 1rem; border-radius: 50%;
+      display:flex; align-items:center; justify-content:center; font: 700 2rem/1 system-ui, sans-serif;
+      background: linear-gradient(135deg,#4f46e5,#ec4899,#06b6d4);
+    }
+    h1 { margin: 0 0 .5rem; font-size: 2rem; }
+    p { margin: .25rem 0; color: var(--muted); }
+    .links { margin-top: 1.5rem; display:flex; flex-direction:column; gap:.75rem; }
+    .btn {
+      display:block; padding:.75rem; border-radius:.75rem; text-decoration:none; color:var(--fg);
+      background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+      transition: transform .25s ease, background .25s ease, border .25s ease;
+      will-change: transform;
+    }
+    .btn:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); transform: translateY(-3px) scale(1.02); }
+    canvas#bg {
+      position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display:block;
+    }
+  </style>
 </head>
 <body>
-<main>
-           
+  <canvas id="bg"></canvas>
+  <main class="container" id="app">
+    <div class="avatar" id="avatar">CS</div>
+    <h1>Charlie Shanks</h1>
+    <p>Graduate in Cyber Security with First Class Honours from Leeds Beckett University.</p>
+    <p>Passionate about digital security and technology, with a creative side through music.</p>
+    <nav class="links" id="links">
+      <a class="btn" href="https://example.com" target="_blank" rel="noopener noreferrer">Website</a>
+      <a class="btn" href="https://github.com/ShanksCS" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a class="btn" href="https://www.linkedin.com/in/charlie-shanks-9276aa207?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </main>
+  <script>
+    (function () {
+      const app = document.getElementById('app');
+      requestAnimationFrame(() => app.classList.add('loaded'));
+      const avatar = document.getElementById('avatar');
+      const initials = 'Charlie Shanks'.split(' ').filter(Boolean).map(s=>s[0]).slice(0,2).join('').toUpperCase();
+      avatar.textContent = initials;
 
-<header>
-    <img src="assets/img/logo.png" class="animated pulse infinite" alt="logo">
-</header>
+      const canvas = document.getElementById('bg');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-<nav>
-     <ul>
-        <li>
-            <a class="hover" href="https://www.reddit.com/u/tsruhyah">Reddit</a>
-                <p>&nbsp; / &nbsp;</p>
-            <a class="hover" href="https://github.com/goon">Github</a>
-                <p>&nbsp; / &nbsp;</p>
-            <a class="hover" href="https://steamcommunity.com/id/hayhurst">Steam</a>
-                <p>&nbsp; / &nbsp;</p>
-            <a class="hover">hayhurst#0707</a>
-        </li>
-    </ul>
-</nav>
+      const state = { w:0, h:0, dpr: Math.max(1, window.devicePixelRatio || 1) };
+      function size() {
+        state.w = window.innerWidth; state.h = window.innerHeight;
+        state.dpr = Math.max(1, window.devicePixelRatio || 1);
+        canvas.style.width = state.w + 'px';
+        canvas.style.height = state.h + 'px';
+        canvas.width = Math.floor(state.w * state.dpr);
+        canvas.height = Math.floor(state.h * state.dpr);
+        ctx.setTransform(state.dpr,0,0,state.dpr,0,0);
+      }
+      size();
 
+      const particles = Array.from({length:40}, () => ({
+        x: Math.random()*state.w,
+        y: Math.random()*state.h,
+        r: Math.random()*1.5 + 0.7,
+        dx: (Math.random()-0.5)*0.35,
+        dy: (Math.random()-0.5)*0.35
+      }));
 
-<audio autoplay id="sound">
-        <source src="assets/sound/vossi.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
+      function draw() {
+        ctx.clearRect(0,0,state.w,state.h);
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        for (let i=0;i<particles.length;i++) {
+          const p = particles[i];
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fill();
+          p.x += p.dx; p.y += p.dy;
+          if (p.x < 0 || p.x > state.w) p.dx *= -1;
+          if (p.y < 0 || p.y > state.h) p.dy *= -1;
+        }
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
 
-      <script>
-            var audio = document.getElementById("sound");
-            audio.volume = 0.1;
-          </script>
-
-</main>
-
-    
+      let resizeId = 0;
+      window.addEventListener('resize', () => {
+        if (resizeId) cancelAnimationFrame(resizeId);
+        resizeId = requestAnimationFrame(() => {
+          size();
+          for (const p of particles) {
+            if (p.x > state.w) p.x = state.w - p.r;
+            if (p.y > state.h) p.y = state.h - p.r;
+            if (p.x < 0) p.x = p.r;
+            if (p.y < 0) p.y = p.r;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

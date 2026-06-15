@@ -9,292 +9,188 @@
 <meta name="apple-mobile-web-app-title" content="MileTrack">
 <meta name="theme-color" content="#0F172A">
 <script>
-// Generate and inject the apple-touch-icon as a canvas-drawn PNG at runtime
 (function(){
   const c = document.createElement('canvas');
   c.width = 512; c.height = 512;
   const ctx = c.getContext('2d');
-
-  // Background
   ctx.fillStyle = '#0F172A';
-  ctx.beginPath();
-  ctx.roundRect(0, 0, 512, 512, 80);
-  ctx.fill();
-
-  // Subtle grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.roundRect(0,0,512,512,80); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
   for (let i = 40; i < 512; i += 40) {
-    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,512); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(512,i); ctx.stroke();
   }
-
-  // Green glow circle behind road
-  const glow = ctx.createRadialGradient(256, 300, 20, 256, 300, 200);
-  glow.addColorStop(0, 'rgba(34,197,94,0.18)');
-  glow.addColorStop(1, 'rgba(34,197,94,0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, 512, 512);
-
-  // Road — perspective trapezoid
-  ctx.fillStyle = '#1E293B';
-  ctx.beginPath();
-  ctx.moveTo(180, 420);
-  ctx.lineTo(332, 420);
-  ctx.lineTo(290, 220);
-  ctx.lineTo(222, 220);
-  ctx.closePath();
-  ctx.fill();
-
-  // Road border
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Centre dashes on road
-  ctx.strokeStyle = '#22C55E';
-  ctx.lineWidth = 6;
-  ctx.setLineDash([22, 16]);
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(256, 410);
-  ctx.lineTo(256, 230);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // Speedometer arc (bottom half circle)
-  const cx = 256, cy = 186, r = 110;
-  ctx.strokeStyle = '#293548';
-  ctx.lineWidth = 18;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, Math.PI * 0.75, Math.PI * 2.25);
-  ctx.stroke();
-
-  // Green progress arc (~70%)
-  const grad = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
-  grad.addColorStop(0, '#16a34a');
-  grad.addColorStop(1, '#22C55E');
-  ctx.strokeStyle = grad;
-  ctx.lineWidth = 18;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, Math.PI * 0.75, Math.PI * 0.75 + (Math.PI * 1.5 * 0.72));
-  ctx.stroke();
-
-  // Needle
-  const needleAngle = Math.PI * 0.75 + (Math.PI * 1.5 * 0.72);
-  ctx.strokeStyle = '#F1F5F9';
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(cx, cy);
-  ctx.lineTo(cx + Math.cos(needleAngle) * 85, cy + Math.sin(needleAngle) * 85);
-  ctx.stroke();
-
-  // Centre dot
-  ctx.fillStyle = '#22C55E';
-  ctx.beginPath();
-  ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-  ctx.fill();
-
-  // "MT" monogram text
-  ctx.fillStyle = '#F1F5F9';
-  ctx.font = 'bold 38px system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('MT', cx, cy);
-
-  // Inject as apple-touch-icon
-  const url = c.toDataURL('image/png');
-  const link = document.createElement('link');
-  link.rel = 'apple-touch-icon';
-  link.href = url;
-  document.head.appendChild(link);
-
-  // Also favicon
-  const fav = document.createElement('link');
-  fav.rel = 'icon';
-  fav.type = 'image/png';
-  fav.href = url;
-  document.head.appendChild(fav);
+  const glow = ctx.createRadialGradient(256,300,20,256,300,200);
+  glow.addColorStop(0,'rgba(34,197,94,0.18)'); glow.addColorStop(1,'rgba(34,197,94,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0,0,512,512);
+  ctx.fillStyle = '#1E293B'; ctx.beginPath(); ctx.moveTo(180,420); ctx.lineTo(332,420); ctx.lineTo(290,220); ctx.lineTo(222,220); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.strokeStyle = '#22C55E'; ctx.lineWidth = 6; ctx.setLineDash([22,16]); ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(256,410); ctx.lineTo(256,230); ctx.stroke(); ctx.setLineDash([]);
+  const cx=256,cy=186,r=110;
+  ctx.strokeStyle='#293548'; ctx.lineWidth=18; ctx.lineCap='round';
+  ctx.beginPath(); ctx.arc(cx,cy,r,Math.PI*0.75,Math.PI*2.25); ctx.stroke();
+  const grad=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
+  grad.addColorStop(0,'#16a34a'); grad.addColorStop(1,'#22C55E');
+  ctx.strokeStyle=grad; ctx.lineWidth=18;
+  ctx.beginPath(); ctx.arc(cx,cy,r,Math.PI*0.75,Math.PI*0.75+(Math.PI*1.5*0.72)); ctx.stroke();
+  const na=Math.PI*0.75+(Math.PI*1.5*0.72);
+  ctx.strokeStyle='#F1F5F9'; ctx.lineWidth=5; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(na)*85,cy+Math.sin(na)*85); ctx.stroke();
+  ctx.fillStyle='#22C55E'; ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#F1F5F9'; ctx.font='bold 38px system-ui,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('MT',cx,cy);
+  const url=c.toDataURL('image/png');
+  const l=document.createElement('link'); l.rel='apple-touch-icon'; l.href=url; document.head.appendChild(l);
+  const f=document.createElement('link'); f.rel='icon'; f.type='image/png'; f.href=url; document.head.appendChild(f);
 })();
 </script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0F172A;
-    --surface: #1E293B;
-    --surface2: #293548;
-    --border: rgba(255,255,255,0.08);
-    --green: #22C55E;
-    --green-dim: rgba(34,197,94,0.12);
-    --amber: #F59E0B;
-    --red: #EF4444;
-    --red-dim: rgba(239,68,68,0.12);
-    --text: #F1F5F9;
-    --muted: #94A3B8;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Inter', sans-serif;
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0F172A;--surface:#1E293B;--surface2:#293548;
+    --border:rgba(255,255,255,0.08);--green:#22C55E;--green-dim:rgba(34,197,94,0.12);
+    --amber:#F59E0B;--red:#EF4444;--red-dim:rgba(239,68,68,0.12);
+    --text:#F1F5F9;--muted:#94A3B8;
+    --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
   }
-
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 0 40px;
-  }
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 0 40px}
 
   /* ── AUTH ── */
-  #authScreen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100dvh;
-    width: 100%;
-    padding: 32px 24px;
-  }
-  #authScreen.hidden { display: none; }
-
-  .auth-logo { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: 0.1em; color: var(--green); margin-bottom: 6px; }
-  .auth-logo span { color: var(--muted); font-weight: 400; }
-  .auth-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 40px; text-align: center; }
-
-  .pin-dots { display: flex; gap: 14px; margin-bottom: 36px; }
-  .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--muted); background: transparent; transition: all 0.15s; }
-  .pin-dot.filled { background: var(--green); border-color: var(--green); transform: scale(1.1); }
-  .pin-dot.error { background: var(--red); border-color: var(--red); animation: shake 0.4s ease; }
-
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-  }
-
-  .pin-pad { display: grid; grid-template-columns: repeat(3, 72px); grid-template-rows: repeat(4, 72px); gap: 12px; }
-  .pin-key { width: 72px; height: 72px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--mono); font-size: 22px; font-weight: 700; cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center; user-select: none; -webkit-tap-highlight-color: transparent; }
-  .pin-key:active { background: var(--surface2); transform: scale(0.93); }
-  .pin-key.empty { border: none; background: transparent; cursor: default; pointer-events: none; }
-  .pin-key.del { font-size: 18px; color: var(--muted); }
-
-  .auth-msg { margin-top: 24px; font-size: 13px; color: var(--muted); text-align: center; min-height: 20px; }
-  .auth-msg.error { color: var(--red); }
-
-  .lockout-bar { margin-top: 16px; padding: 10px 16px; background: var(--red-dim); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; font-size: 13px; color: var(--red); text-align: center; display: none; }
+  #authScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;width:100%;padding:32px 24px}
+  #authScreen.hidden{display:none}
+  .auth-logo{font-family:var(--mono);font-size:18px;font-weight:700;letter-spacing:0.1em;color:var(--green);margin-bottom:6px}
+  .auth-logo span{color:var(--muted);font-weight:400}
+  .auth-subtitle{font-size:13px;color:var(--muted);margin-bottom:40px;text-align:center}
+  .pin-dots{display:flex;gap:14px;margin-bottom:36px}
+  .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);background:transparent;transition:all 0.15s}
+  .pin-dot.filled{background:var(--green);border-color:var(--green);transform:scale(1.1)}
+  .pin-dot.error{background:var(--red);border-color:var(--red);animation:shake 0.4s ease}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  .pin-pad{display:grid;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(4,72px);gap:12px}
+  .pin-key{width:72px;height:72px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--mono);font-size:22px;font-weight:700;cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-tap-highlight-color:transparent}
+  .pin-key:active{background:var(--surface2);transform:scale(0.93)}
+  .pin-key.empty{border:none;background:transparent;cursor:default;pointer-events:none}
+  .pin-key.del{font-size:18px;color:var(--muted)}
+  .auth-msg{margin-top:24px;font-size:13px;color:var(--muted);text-align:center;min-height:20px}
+  .auth-msg.error{color:var(--red)}
+  .lockout-bar{margin-top:16px;padding:10px 16px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:13px;color:var(--red);text-align:center;display:none}
 
   /* ── APP ── */
-  #appScreen { display: none; flex-direction: column; align-items: center; width: 100%; }
-  #appScreen.visible { display: flex; }
+  #appScreen{display:none;flex-direction:column;align-items:center;width:100%}
+  #appScreen.visible{display:flex}
+  header{width:100%;padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+  .logo{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:0.08em;color:var(--green)}
+  .logo span{color:var(--muted);font-weight:400}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .status-pill{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:var(--surface2);color:var(--muted);transition:all 0.3s}
+  .status-pill.active{background:var(--green-dim);color:var(--green);animation:pulse-pill 2s ease-in-out infinite}
+  @keyframes pulse-pill{0%,100%{opacity:1}50%{opacity:0.7}}
+  .btn-lock{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:16px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;flex-shrink:0}
+  .btn-lock:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+  main{width:100%;max-width:480px;padding:32px 24px 0;display:flex;flex-direction:column;gap:20px}
 
-  header { width: 100%; padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-  .logo { font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--green); }
-  .logo span { color: var(--muted); font-weight: 400; }
-  .header-right { display: flex; align-items: center; gap: 10px; }
+  /* ── TRIP CARD ── */
+  .trip-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:20px;position:relative;overflow:hidden}
+  .trip-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,0.06) 0%,transparent 70%);pointer-events:none;opacity:0;transition:opacity 0.5s}
+  .trip-card.active::before{opacity:1}
 
-  .status-pill { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; background: var(--surface2); color: var(--muted); transition: all 0.3s; }
-  .status-pill.active { background: var(--green-dim); color: var(--green); animation: pulse-pill 2s ease-in-out infinite; }
-  @keyframes pulse-pill { 0%,100%{opacity:1} 50%{opacity:0.7} }
+  .trip-status-row{display:flex;align-items:center;justify-content:space-between}
+  .trip-status-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+  .trip-timer{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:700}
 
-  .btn-lock { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
-  .btn-lock:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .odo-row{display:grid;grid-template-columns:1fr 32px 1fr;gap:8px;align-items:center}
+  .odo-field{display:flex;flex-direction:column;gap:6px}
+  .odo-field label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
+  .odo-input{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;width:100%;outline:none;text-align:center;transition:border-color 0.2s}
+  .odo-input:focus{border-color:var(--green)}
+  .odo-input:disabled{opacity:0.4;cursor:not-allowed}
+  .odo-input.filled{color:var(--green);border-color:rgba(34,197,94,0.3)}
+  .odo-arrow{text-align:center;color:var(--muted);font-size:18px;padding-top:18px}
 
-  main { width: 100%; max-width: 480px; padding: 32px 24px 0; display: flex; flex-direction: column; gap: 20px; }
+  .miles-display{text-align:center;padding:16px 0 4px}
+  .miles-big{font-family:var(--mono);font-size:clamp(44px,14vw,68px);font-weight:700;color:var(--text);line-height:1;transition:color 0.3s}
+  .miles-big.has-value{color:var(--green)}
+  .miles-unit{font-family:var(--mono);font-size:16px;color:var(--muted);margin-top:4px}
+  .miles-pay{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber);margin-top:6px}
 
-  .odometer-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; }
-  .odometer-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.06) 0%, transparent 70%); pointer-events: none; opacity: 0; transition: opacity 0.5s; }
-  .odometer-card.active::before { opacity: 1; }
+  .location-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted)}
+  .loc-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+  .loc-dot.locked{background:var(--green);animation:pulse-dot 1.5s ease-in-out infinite}
+  .loc-dot.searching{background:var(--amber);animation:pulse-dot 0.8s ease-in-out infinite}
+  .loc-dot.error{background:var(--red);animation:none}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 
-  .odo-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
-  .odo-display { font-family: var(--mono); font-size: clamp(52px, 16vw, 80px); font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.02em; transition: color 0.3s; }
-  .odo-display.active { color: var(--green); }
-  .odo-unit { font-family: var(--mono); font-size: 18px; font-weight: 400; color: var(--muted); margin-top: 6px; }
+  /* ── RATE ── */
+  .rate-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .rate-label{font-size:13px;color:var(--muted)}
+  .rate-input-wrap{display:flex;align-items:center;gap:6px}
+  .rate-prefix{font-family:var(--mono);font-size:15px;color:var(--amber);font-weight:700}
+  .rate-input{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;width:70px;text-align:right;outline:none}
+  .rate-input:focus{border-color:var(--amber)}
+  .rate-suffix{font-size:12px;color:var(--muted)}
 
-  .odo-meta { display: flex; justify-content: center; gap: 24px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
-  .meta-item { text-align: center; }
-  .meta-val { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--amber); }
-  .meta-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
-
-  /* ── RATE SETTINGS ── */
-  .rate-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .rate-label { font-size: 13px; color: var(--muted); }
-  .rate-input-wrap { display: flex; align-items: center; gap: 6px; }
-  .rate-prefix { font-family: var(--mono); font-size: 15px; color: var(--amber); font-weight: 700; }
-  .rate-input { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; width: 70px; text-align: right; outline: none; }
-  .rate-input:focus { border-color: var(--amber); }
-  .rate-suffix { font-size: 12px; color: var(--muted); }
-
-  /* ── PURPOSE MODAL ── */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .modal-overlay.visible { opacity: 1; pointer-events: all; }
-  .modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; padding: 24px 24px 40px; width: 100%; max-width: 480px; transform: translateY(40px); transition: transform 0.25s cubic-bezier(0.34,1.2,0.64,1); }
-  .modal-overlay.visible .modal-sheet { transform: translateY(0); }
-  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
-  .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 15px; font-family: var(--sans); color: var(--text); outline: none; margin-bottom: 16px; }
-  .modal-input:focus { border-color: var(--green); }
-  .modal-input::placeholder { color: var(--muted); }
-  .modal-btn { width: 100%; background: var(--green); color: #0a1a0f; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-family: var(--sans); }
-  .modal-btn:active { transform: scale(0.98); }
+  /* ── MODALS ── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity 0.2s}
+  .modal-overlay.visible{opacity:1;pointer-events:all}
+  .modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 24px 48px;width:100%;max-width:480px;transform:translateY(40px);transition:transform 0.25s cubic-bezier(0.34,1.2,0.64,1)}
+  .modal-overlay.visible .modal-sheet{transform:translateY(0)}
+  .modal-title{font-size:16px;font-weight:600;margin-bottom:6px}
+  .modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+  .modal-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--sans);color:var(--text);outline:none;margin-bottom:16px}
+  .modal-input:focus{border-color:var(--green)}
+  .modal-input::placeholder{color:var(--muted)}
+  .modal-btn{width:100%;background:var(--green);color:#0a1a0f;font-size:15px;font-weight:600;padding:14px;border-radius:12px;border:none;cursor:pointer;font-family:var(--sans)}
+  .modal-btn:active{transform:scale(0.98)}
 
   /* ── BUTTONS ── */
-  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; transition: all 0.15s; letter-spacing: 0.01em; }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-  .btn-start { background: var(--green); color: #0a1a0f; grid-column: 1 / -1; }
-  .btn-start:hover:not(:disabled) { background: #16a34a; }
-  .btn-end { background: var(--red); color: #fff; grid-column: 1 / -1; display: none; }
-  .btn-end.visible { display: block; }
-  .btn-start.hidden { display: none; }
-  .btn-export { background: var(--surface2); color: var(--text); font-size: 13px; }
-  .btn-clear { background: transparent; color: var(--muted); border: 1px solid var(--border); font-size: 13px; }
-  .btn-clear:hover:not(:disabled) { color: var(--red); border-color: var(--red); }
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{font-family:var(--sans);font-size:15px;font-weight:600;padding:16px;border-radius:14px;border:none;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em}
+  .btn:active{transform:scale(0.97)}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+  .btn-start{background:var(--green);color:#0a1a0f;grid-column:1/-1}
+  .btn-start:hover:not(:disabled){background:#16a34a}
+  .btn-end{background:var(--red);color:#fff;grid-column:1/-1;display:none}
+  .btn-end.visible{display:block}
+  .btn-start.hidden{display:none}
+  .btn-export{background:var(--surface2);color:var(--text);font-size:13px}
+  .btn-clear{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:13px}
+  .btn-clear:hover:not(:disabled){color:var(--red);border-color:var(--red)}
 
-  .gps-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--muted); }
-  .gps-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; transition: background 0.3s; }
-  .gps-dot.locked { background: var(--green); animation: pulse-dot 1.5s ease-in-out infinite; }
-  .gps-dot.searching { background: var(--amber); animation: pulse-dot 0.8s ease-in-out infinite; }
-  .gps-dot.error { background: var(--red); animation: none; }
-  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  /* ── TOTALS ── */
+  .totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .total-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+  .total-card-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .total-card-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--amber)}
+  .total-card-sub{font-size:11px;color:var(--muted);margin-top:3px}
+  .total-card.wide{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
+  .total-card.wide .total-card-val{font-size:18px}
 
-  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  /* ── TRIP LIST ── */
+  .section-title{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--border)}
+  .trip-list{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto}
+  .trip-list::-webkit-scrollbar{width:4px}
+  .trip-list::-webkit-scrollbar-track{background:transparent}
+  .trip-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  .trip-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr auto auto;gap:3px 10px;align-items:start}
+  .trip-addr{font-size:13px;color:var(--text);line-height:1.4;grid-column:1}
+  .trip-addr span{color:var(--muted);font-size:11px}
+  .trip-purpose{font-size:11px;color:var(--amber);margin-top:2px;grid-column:1}
+  .trip-date{font-size:11px;color:var(--muted);grid-column:1}
+  .trip-miles{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber);text-align:right;grid-row:1/4;grid-column:2;align-self:center}
+  .trip-miles small{font-family:var(--sans);font-size:10px;font-weight:500;color:var(--muted);display:block;text-align:right}
+  .trip-delete{grid-row:1/4;grid-column:3;align-self:center;background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:4px 0 4px 4px;line-height:1;transition:color 0.15s;-webkit-tap-highlight-color:transparent}
+  .trip-delete:hover{color:var(--red)}
+  .empty-state{text-align:center;padding:32px 0;color:var(--muted);font-size:13px;line-height:1.6}
+  .empty-state .icon{font-size:28px;margin-bottom:8px}
 
-  .trip-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
-  .trip-list::-webkit-scrollbar { width: 4px; }
-  .trip-list::-webkit-scrollbar-track { background: transparent; }
-  .trip-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .change-pin-row{text-align:center;padding-bottom:8px}
+  .btn-change-pin{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:var(--sans)}
+  .btn-change-pin:hover{color:var(--text)}
 
-  .trip-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; align-items: start; }
-  .trip-addr { font-size: 13px; color: var(--text); line-height: 1.4; }
-  .trip-addr span { color: var(--muted); font-size: 11px; }
-  .trip-purpose { font-size: 11px; color: var(--amber); margin-top: 2px; }
-  .trip-miles { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--amber); text-align: right; grid-row: 1 / 4; align-self: center; }
-  .trip-miles small { font-family: var(--sans); font-size: 10px; font-weight: 500; color: var(--muted); display: block; text-align: right; }
-  .trip-date { font-size: 11px; color: var(--muted); }
-
-  .empty-state { text-align: center; padding: 32px 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
-  .empty-state .icon { font-size: 28px; margin-bottom: 8px; }
-
-  .total-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-  .total-label { font-size: 13px; color: var(--muted); }
-  .total-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--amber); }
-
-  .change-pin-row { text-align: center; padding-bottom: 8px; }
-  .btn-change-pin { background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-family: var(--sans); }
-  .btn-change-pin:hover { color: var(--text); }
-
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 99px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; white-space: nowrap; }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation: none !important; transition: none !important; } }
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;padding:10px 20px;border-radius:99px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:100;white-space:nowrap}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -303,7 +199,7 @@
 <div id="authScreen">
   <div class="auth-logo">MILE<span>TRACK</span></div>
   <div class="auth-subtitle" id="authSubtitle">Loading…</div>
-  <div class="pin-dots" id="pinDots">
+  <div class="pin-dots">
     <div class="pin-dot" id="d0"></div>
     <div class="pin-dot" id="d1"></div>
     <div class="pin-dot" id="d2"></div>
@@ -331,6 +227,7 @@
 <div class="modal-overlay" id="purposeModal">
   <div class="modal-sheet">
     <div class="modal-title">What was this trip for?</div>
+    <div class="modal-sub" id="purposeModalSub"></div>
     <input class="modal-input" id="purposeInput" type="text" placeholder="e.g. Client visit, site survey…" maxlength="80">
     <button class="modal-btn" onclick="saveTripWithPurpose()">Save Trip</button>
   </div>
@@ -347,32 +244,39 @@
   </header>
 
   <main>
-    <div class="gps-bar">
-      <div class="gps-dot" id="gpsDot"></div>
-      <span id="gpsText">Waiting for GPS…</span>
-    </div>
 
-    <div class="odometer-card" id="odoCard">
-      <div class="odo-label">Current trip</div>
-      <div class="odo-display" id="odoDisplay">0.00</div>
-      <div class="odo-unit">miles</div>
-      <div class="odo-meta">
-        <div class="meta-item">
-          <div class="meta-val" id="metaDuration">00:00</div>
-          <div class="meta-label">Duration</div>
+    <!-- Trip tracking card -->
+    <div class="trip-card" id="tripCard">
+      <div class="trip-status-row">
+        <span class="trip-status-label" id="tripStatusLabel">Enter odometer to start</span>
+        <span class="trip-timer" id="tripTimer"></span>
+      </div>
+
+      <div class="odo-row">
+        <div class="odo-field">
+          <label>Start odometer</label>
+          <input class="odo-input" id="startOdo" type="number" placeholder="e.g. 45230" inputmode="numeric">
         </div>
-        <div class="meta-item">
-          <div class="meta-val" id="metaSpeed">0</div>
-          <div class="meta-label">mph now</div>
+        <div class="odo-arrow">→</div>
+        <div class="odo-field">
+          <label>End odometer</label>
+          <input class="odo-input" id="endOdo" type="number" placeholder="—" inputmode="numeric" disabled>
         </div>
-        <div class="meta-item">
-          <div class="meta-val" id="metaPoints">0</div>
-          <div class="meta-label">GPS points</div>
-        </div>
+      </div>
+
+      <div class="miles-display">
+        <div class="miles-big" id="milesDisplay">—</div>
+        <div class="miles-unit">miles</div>
+        <div class="miles-pay" id="milesPayDisplay"></div>
+      </div>
+
+      <div class="location-bar">
+        <div class="loc-dot" id="locDot"></div>
+        <span id="locText">Location will be captured on start</span>
       </div>
     </div>
 
-    <!-- Rate setting -->
+    <!-- Rate -->
     <div class="rate-card">
       <span class="rate-label">Rate per mile</span>
       <div class="rate-input-wrap">
@@ -382,6 +286,7 @@
       </div>
     </div>
 
+    <!-- Action buttons -->
     <div class="btn-row">
       <button class="btn btn-start" id="btnStart" onclick="startTrip()">Start Trip</button>
       <button class="btn btn-end" id="btnEnd" onclick="endTrip()">End &amp; Save Trip</button>
@@ -389,18 +294,34 @@
       <button class="btn btn-clear" onclick="clearLog()">Clear Log</button>
     </div>
 
+    <!-- Running totals -->
+    <div class="totals-grid" id="totalsGrid" style="display:none">
+      <div class="total-card">
+        <div class="total-card-label">This month</div>
+        <div class="total-card-val" id="monthMiles">0.00</div>
+        <div class="total-card-sub">miles</div>
+      </div>
+      <div class="total-card">
+        <div class="total-card-label">This month</div>
+        <div class="total-card-val" id="monthPay">£0.00</div>
+        <div class="total-card-sub">earned</div>
+      </div>
+      <div class="total-card wide">
+        <div>
+          <div class="total-card-label">All time</div>
+          <div class="total-card-sub" id="allTimeSub">0 trips</div>
+        </div>
+        <div class="total-card-val" id="allTimeMiles">0.00 mi · £0.00</div>
+      </div>
+    </div>
+
     <div><div class="section-title">Trip log</div></div>
 
     <div id="tripListWrap">
       <div class="empty-state">
         <div class="icon">🚗</div>
-        No trips logged yet.<br>Tap Start Trip to begin tracking.
+        No trips logged yet.<br>Enter your odometer and tap Start Trip.
       </div>
-    </div>
-
-    <div class="total-bar" id="totalBar" style="display:none">
-      <span class="total-label">Total logged miles</span>
-      <span class="total-val" id="totalVal">0.00</span>
     </div>
 
     <div class="change-pin-row">
@@ -416,30 +337,27 @@
 const PIN_KEY     = 'mt_pin_hash';
 const FAIL_KEY    = 'mt_fail_count';
 const LOCKOUT_KEY = 'mt_lockout_until';
-const TRIPS_KEY   = 'miletrack_trips_v2';
+const TRIPS_KEY   = 'miletrack_trips_v3';
 const SESSION_KEY = 'mt_session';
 const RATE_KEY    = 'mt_rate';
 const MAX_FAILS   = 5;
 const LOCKOUT_MS  = 5 * 60 * 1000;
 
 // ─── AUTH ─────────────────────────────────────────────────────────────────────
-let pinBuffer = '';
-let authMode  = 'login';
-let pendingNewPin = '';
+let pinBuffer = '', authMode = 'login', pendingNewPin = '';
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-
 const getStoredHash   = () => localStorage.getItem(PIN_KEY);
-const getFailCount    = () => parseInt(localStorage.getItem(FAIL_KEY) || '0');
-const getLockoutUntil = () => parseInt(localStorage.getItem(LOCKOUT_KEY) || '0');
-const setFailCount    = n  => localStorage.setItem(FAIL_KEY, n);
-const setLockoutUntil = t  => localStorage.setItem(LOCKOUT_KEY, t);
+const getFailCount    = () => parseInt(localStorage.getItem(FAIL_KEY)||'0');
+const getLockoutUntil = () => parseInt(localStorage.getItem(LOCKOUT_KEY)||'0');
+const setFailCount    = n  => localStorage.setItem(FAIL_KEY,n);
+const setLockoutUntil = t  => localStorage.setItem(LOCKOUT_KEY,t);
 const clearFailures   = () => { localStorage.removeItem(FAIL_KEY); localStorage.removeItem(LOCKOUT_KEY); };
-const setSessionValid = () => sessionStorage.setItem(SESSION_KEY, '1');
-const isSessionValid  = () => sessionStorage.getItem(SESSION_KEY) === '1';
+const setSessionValid = () => sessionStorage.setItem(SESSION_KEY,'1');
+const isSessionValid  = () => sessionStorage.getItem(SESSION_KEY)==='1';
 const clearSession    = () => sessionStorage.removeItem(SESSION_KEY);
 
 function isLockedOut() {
@@ -448,330 +366,364 @@ function isLockedOut() {
   if (until > 0) clearFailures();
   return false;
 }
-const remainingLockout = () => Math.ceil((getLockoutUntil() - Date.now()) / 1000);
+const remainingLockout = () => Math.ceil((getLockoutUntil()-Date.now())/1000);
 
 function updateDots(count, state) {
-  for (let i = 0; i < 4; i++) {
-    const d = document.getElementById('d' + i);
-    d.className = 'pin-dot' + (state === 'error' ? ' error' : (i < count ? ' filled' : ''));
+  for (let i=0;i<4;i++) {
+    const d=document.getElementById('d'+i);
+    d.className='pin-dot'+(state==='error'?' error':(i<count?' filled':''));
   }
 }
 function setAuthMsg(msg, isError) {
-  const el = document.getElementById('authMsg');
-  el.textContent = msg;
-  el.className = 'auth-msg' + (isError ? ' error' : '');
+  const el=document.getElementById('authMsg');
+  el.textContent=msg; el.className='auth-msg'+(isError?' error':'');
 }
 function setPinPadDisabled(disabled) {
-  document.querySelectorAll('.pin-key').forEach(k => k.disabled = disabled);
+  document.querySelectorAll('.pin-key').forEach(k=>k.disabled=disabled);
 }
 function showLockout() {
-  const bar = document.getElementById('lockoutBar');
-  if (!isLockedOut()) { bar.style.display = 'none'; return; }
-  bar.style.display = 'block';
-  setPinPadDisabled(true);
-  const tick = setInterval(() => {
-    if (!isLockedOut()) { bar.style.display = 'none'; setPinPadDisabled(false); setAuthMsg(''); clearInterval(tick); return; }
-    bar.textContent = `Too many wrong attempts. Try again in ${remainingLockout()}s.`;
-  }, 1000);
-  bar.textContent = `Too many wrong attempts. Try again in ${remainingLockout()}s.`;
+  const bar=document.getElementById('lockoutBar');
+  if (!isLockedOut()) { bar.style.display='none'; return; }
+  bar.style.display='block'; setPinPadDisabled(true);
+  const tick=setInterval(()=>{
+    if (!isLockedOut()) { bar.style.display='none'; setPinPadDisabled(false); setAuthMsg(''); clearInterval(tick); return; }
+    bar.textContent=`Too many wrong attempts. Try again in ${remainingLockout()}s.`;
+  },1000);
+  bar.textContent=`Too many wrong attempts. Try again in ${remainingLockout()}s.`;
 }
 
 function pinKey(digit) {
-  if (isLockedOut() || pinBuffer.length >= 4) return;
-  pinBuffer += digit;
-  updateDots(pinBuffer.length, 'normal');
-  if (pinBuffer.length === 4) setTimeout(submitPIN, 120);
+  if (isLockedOut()||pinBuffer.length>=4) return;
+  pinBuffer+=digit; updateDots(pinBuffer.length,'normal');
+  if (pinBuffer.length===4) setTimeout(submitPIN,120);
 }
 function pinDel() {
   if (!pinBuffer.length) return;
-  pinBuffer = pinBuffer.slice(0, -1);
-  updateDots(pinBuffer.length, 'normal');
+  pinBuffer=pinBuffer.slice(0,-1); updateDots(pinBuffer.length,'normal');
 }
-
 async function submitPIN() {
-  const hash = await sha256(pinBuffer);
-  pinBuffer = '';
-
-  if (authMode === 'setup') {
-    localStorage.setItem(PIN_KEY, hash);
-    clearFailures();
-    setAuthMsg('PIN set!');
-    setTimeout(unlockApp, 300);
-
-  } else if (authMode === 'login') {
-    if (isLockedOut()) { updateDots(0, 'error'); showLockout(); return; }
-    if (hash === getStoredHash()) {
-      clearFailures(); setSessionValid();
-      updateDots(4, 'normal');
-      setTimeout(unlockApp, 200);
+  const hash=await sha256(pinBuffer); pinBuffer='';
+  if (authMode==='setup') {
+    localStorage.setItem(PIN_KEY,hash); clearFailures(); setAuthMsg('PIN set!');
+    setTimeout(unlockApp,300);
+  } else if (authMode==='login') {
+    if (isLockedOut()) { updateDots(0,'error'); showLockout(); return; }
+    if (hash===getStoredHash()) {
+      clearFailures(); setSessionValid(); updateDots(4,'normal'); setTimeout(unlockApp,200);
     } else {
-      const fails = getFailCount() + 1;
-      setFailCount(fails);
-      updateDots(4, 'error');
-      if (fails >= MAX_FAILS) { setLockoutUntil(Date.now() + LOCKOUT_MS); setAuthMsg(''); showLockout(); }
-      else setAuthMsg(`Incorrect PIN. ${MAX_FAILS - fails} attempt${MAX_FAILS - fails !== 1 ? 's' : ''} remaining.`, true);
-      setTimeout(() => updateDots(0, 'normal'), 600);
+      const fails=getFailCount()+1; setFailCount(fails); updateDots(4,'error');
+      if (fails>=MAX_FAILS) { setLockoutUntil(Date.now()+LOCKOUT_MS); setAuthMsg(''); showLockout(); }
+      else setAuthMsg(`Incorrect PIN. ${MAX_FAILS-fails} attempt${MAX_FAILS-fails!==1?'s':''} remaining.`,true);
+      setTimeout(()=>updateDots(0,'normal'),600);
     }
-
-  } else if (authMode === 'change_old') {
-    if (hash === getStoredHash()) {
-      authMode = 'change_new';
-      document.getElementById('authSubtitle').textContent = 'Enter your new PIN';
-      setAuthMsg(''); updateDots(0, 'normal');
-    } else {
-      updateDots(4, 'error'); setAuthMsg('Incorrect current PIN.', true);
-      setTimeout(() => updateDots(0, 'normal'), 600);
-    }
-
-  } else if (authMode === 'change_new') {
-    pendingNewPin = hash;
-    authMode = 'change_confirm';
-    document.getElementById('authSubtitle').textContent = 'Confirm your new PIN';
-    setAuthMsg(''); updateDots(0, 'normal');
-
-  } else if (authMode === 'change_confirm') {
-    if (hash === pendingNewPin) {
-      localStorage.setItem(PIN_KEY, hash);
-      authMode = 'login'; pendingNewPin = '';
+  } else if (authMode==='change_old') {
+    if (hash===getStoredHash()) {
+      authMode='change_new'; document.getElementById('authSubtitle').textContent='Enter your new PIN';
+      setAuthMsg(''); updateDots(0,'normal');
+    } else { updateDots(4,'error'); setAuthMsg('Incorrect current PIN.',true); setTimeout(()=>updateDots(0,'normal'),600); }
+  } else if (authMode==='change_new') {
+    pendingNewPin=hash; authMode='change_confirm';
+    document.getElementById('authSubtitle').textContent='Confirm your new PIN';
+    setAuthMsg(''); updateDots(0,'normal');
+  } else if (authMode==='change_confirm') {
+    if (hash===pendingNewPin) {
+      localStorage.setItem(PIN_KEY,hash); authMode='login'; pendingNewPin='';
       setAuthMsg('PIN changed successfully!');
-      setTimeout(() => { document.getElementById('authScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('visible'); setAuthMsg(''); }, 500);
+      setTimeout(()=>{ document.getElementById('authScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('visible'); setAuthMsg(''); },500);
     } else {
-      updateDots(4, 'error'); setAuthMsg('PINs do not match. Try again.', true);
-      authMode = 'change_new'; pendingNewPin = '';
-      setTimeout(() => { updateDots(0, 'normal'); document.getElementById('authSubtitle').textContent = 'Enter your new PIN'; }, 700);
+      updateDots(4,'error'); setAuthMsg('PINs do not match. Try again.',true);
+      authMode='change_new'; pendingNewPin='';
+      setTimeout(()=>{ updateDots(0,'normal'); document.getElementById('authSubtitle').textContent='Enter your new PIN'; },700);
     }
   }
 }
-
 function unlockApp() {
   document.getElementById('authScreen').classList.add('hidden');
   document.getElementById('appScreen').classList.add('visible');
-  updateDots(0, 'normal'); setAuthMsg('');
-  loadRate(); renderTrips();
+  updateDots(0,'normal'); setAuthMsg(''); loadRate(); renderTrips();
 }
-
 function lockApp() {
-  clearSession(); pinBuffer = ''; authMode = 'login';
-  document.getElementById('authSubtitle').textContent = 'Enter your PIN to continue';
-  updateDots(0, 'normal'); setAuthMsg('');
+  clearSession(); pinBuffer=''; authMode='login';
+  document.getElementById('authSubtitle').textContent='Enter your PIN to continue';
+  updateDots(0,'normal'); setAuthMsg('');
   document.getElementById('authScreen').classList.remove('hidden');
   document.getElementById('appScreen').classList.remove('visible');
   showLockout();
 }
-
 function initiateChangePIN() {
-  authMode = 'change_old'; pinBuffer = '';
-  document.getElementById('authSubtitle').textContent = 'Enter your current PIN';
-  updateDots(0, 'normal'); setAuthMsg('');
+  authMode='change_old'; pinBuffer='';
+  document.getElementById('authSubtitle').textContent='Enter your current PIN';
+  updateDots(0,'normal'); setAuthMsg('');
   document.getElementById('appScreen').classList.remove('visible');
   document.getElementById('authScreen').classList.remove('hidden');
 }
-
 function init() {
-  const hasPin = !!getStoredHash();
-  if (!hasPin) { authMode = 'setup'; document.getElementById('authSubtitle').textContent = 'Choose a 4-digit PIN to protect your data'; }
+  const hasPin=!!getStoredHash();
+  if (!hasPin) { authMode='setup'; document.getElementById('authSubtitle').textContent='Choose a 4-digit PIN to protect your data'; }
   else if (isSessionValid()) { unlockApp(); return; }
-  else { authMode = 'login'; document.getElementById('authSubtitle').textContent = 'Enter your PIN to continue'; showLockout(); }
+  else { authMode='login'; document.getElementById('authSubtitle').textContent='Enter your PIN to continue'; showLockout(); }
 }
 
-// ─── RATE ─────────────────────────────────────────────────────────────────────
+// ─── RATE ────────────────────────────────────────────────────────────────────
 function loadRate() {
-  const saved = parseFloat(localStorage.getItem(RATE_KEY) || '0.25');
-  document.getElementById('rateInput').value = saved.toFixed(2);
+  const saved=parseFloat(localStorage.getItem(RATE_KEY)||'0.25');
+  document.getElementById('rateInput').value=saved.toFixed(2);
 }
 function getRate() {
-  const v = parseFloat(document.getElementById('rateInput').value);
-  const rate = isNaN(v) ? 0.25 : v;
-  localStorage.setItem(RATE_KEY, rate);
-  return rate;
+  const v=parseFloat(document.getElementById('rateInput').value);
+  const rate=isNaN(v)?0.25:v;
+  localStorage.setItem(RATE_KEY,rate); return rate;
 }
 
 // ─── TRACKER ─────────────────────────────────────────────────────────────────
-let trips = [];
-let tracking = false;
-let watchId = null;
-let positions = [];
-let tripStart = null;
-let startAddress = '';
-let currentMiles = 0;
-let timerInterval = null;
-let pendingTripData = null;
+let tracking=false;
+let tripStart=null;
+let startAddress='', endAddress='';
+let timerInterval=null;
+let pendingTripData=null;
 
-function haversine(a, b) {
-  const R = 3958.8;
-  const dLat = (b.lat - a.lat) * Math.PI / 180;
-  const dLon = (b.lon - a.lon) * Math.PI / 180;
-  const s = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
-}
-function totalDistance(pts) {
-  let d = 0;
-  for (let i = 1; i < pts.length; i++) d += haversine(pts[i-1], pts[i]);
-  return d;
-}
-async function reverseGeocode(lat, lon) {
+async function reverseGeocode(lat,lon) {
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`);
-    const d = await r.json();
-    const a = d.address || {};
-    const road = a.road || a.pedestrian || a.path || '';
-    const town = a.town || a.city || a.village || a.suburb || '';
-    return [road, town].filter(Boolean).join(', ') || d.display_name?.split(',').slice(0,2).join(',') || 'Unknown location';
+    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`);
+    const d=await r.json();
+    const a=d.address||{};
+    const road=a.road||a.pedestrian||a.path||'';
+    const town=a.town||a.city||a.village||a.suburb||'';
+    return [road,town].filter(Boolean).join(', ')||d.display_name?.split(',').slice(0,2).join(',')||'Unknown location';
   } catch { return 'Unknown location'; }
 }
-function setGPS(state, text) {
-  document.getElementById('gpsDot').className = 'gps-dot' + (state ? ' '+state : '');
-  document.getElementById('gpsText').textContent = text;
-}
-function updateOdo() {
-  currentMiles = positions.length > 1 ? totalDistance(positions) : 0;
-  document.getElementById('odoDisplay').textContent = currentMiles.toFixed(2);
-  document.getElementById('metaPoints').textContent = positions.length;
-}
-function updateTimer() {
-  if (!tripStart) return;
-  const s = Math.floor((Date.now()-tripStart)/1000);
-  document.getElementById('metaDuration').textContent =
-    `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+
+function setLoc(state,text) {
+  document.getElementById('locDot').className='loc-dot'+(state?' '+state:'');
+  document.getElementById('locText').textContent=text;
 }
 
-function startTrip() {
+function updateMilesDisplay() {
+  const startVal=parseFloat(document.getElementById('startOdo').value);
+  const endVal=parseFloat(document.getElementById('endOdo').value);
+  const rate=getRate();
+  if (!isNaN(startVal)&&!isNaN(endVal)&&endVal>startVal) {
+    const miles=(endVal-startVal);
+    const pay=(miles*rate).toFixed(2);
+    document.getElementById('milesDisplay').textContent=miles.toFixed(1);
+    document.getElementById('milesDisplay').classList.add('has-value');
+    document.getElementById('milesPayDisplay').textContent=`£${pay}`;
+  } else {
+    document.getElementById('milesDisplay').textContent='—';
+    document.getElementById('milesDisplay').classList.remove('has-value');
+    document.getElementById('milesPayDisplay').textContent='';
+  }
+}
+
+function updateTimer() {
+  if (!tripStart) return;
+  const s=Math.floor((Date.now()-tripStart)/1000);
+  const h=Math.floor(s/3600);
+  const m=Math.floor((s%3600)/60).toString().padStart(2,'0');
+  const sec=(s%60).toString().padStart(2,'0');
+  document.getElementById('tripTimer').textContent=h>0?`${h}:${m}:${sec}`:`${m}:${sec}`;
+}
+
+// Live update miles as end odo is typed
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('endOdo').addEventListener('input', updateMilesDisplay);
+});
+
+async function startTrip() {
+  const startOdoVal=parseFloat(document.getElementById('startOdo').value);
+  if (isNaN(startOdoVal)||startOdoVal<=0) {
+    showToast('Please enter your start odometer reading'); return;
+  }
   if (!navigator.geolocation) { showToast('GPS not available on this device'); return; }
-  setGPS('searching', 'Getting your location…');
-  navigator.geolocation.getCurrentPosition(async pos => {
-    positions = [{ lat: pos.coords.latitude, lon: pos.coords.longitude }];
-    tripStart = Date.now(); tracking = true;
-    startAddress = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
-    setGPS('locked', `GPS locked · ${startAddress}`);
-    document.getElementById('odoCard').classList.add('active');
-    document.getElementById('odoDisplay').classList.add('active');
-    document.getElementById('statusPill').textContent = 'Tracking';
+
+  document.getElementById('btnStart').disabled=true;
+  setLoc('searching','Getting your location…');
+
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    startAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    setLoc('locked',`📍 ${startAddress}`);
+
+    tracking=true;
+    tripStart=Date.now();
+    document.getElementById('tripCard').classList.add('active');
+    document.getElementById('startOdo').classList.add('filled');
+    document.getElementById('startOdo').disabled=true;
+    document.getElementById('endOdo').disabled=false;
+    document.getElementById('endOdo').focus();
+    document.getElementById('tripStatusLabel').textContent='Trip in progress';
+    document.getElementById('statusPill').textContent='Tracking';
     document.getElementById('statusPill').classList.add('active');
     document.getElementById('btnStart').classList.add('hidden');
+    document.getElementById('btnStart').disabled=false;
     document.getElementById('btnEnd').classList.add('visible');
-    timerInterval = setInterval(updateTimer, 1000);
-    watchId = navigator.geolocation.watchPosition(p => {
-      if (!tracking) return;
-      const pt = { lat: p.coords.latitude, lon: p.coords.longitude };
-      if (!positions.length || haversine(positions[positions.length-1], pt) > 0.003) { positions.push(pt); updateOdo(); }
-      const mph = p.coords.speed != null ? (p.coords.speed * 2.237).toFixed(0) : '--';
-      document.getElementById('metaSpeed').textContent = mph;
-    }, () => setGPS('error', 'GPS signal lost — trying to reconnect…'),
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 });
-    showToast('Trip started');
-  }, () => { setGPS('error', 'Location access denied'); showToast('Could not get location'); },
-  { enableHighAccuracy: true, timeout: 15000 });
+    timerInterval=setInterval(updateTimer,1000);
+    showToast('Trip started — enter end odometer when you arrive');
+  },()=>{
+    setLoc('error','Could not get location — check permissions');
+    document.getElementById('btnStart').disabled=false;
+    showToast('Could not get location');
+  },{enableHighAccuracy:true,timeout:15000});
 }
 
 async function endTrip() {
   if (!tracking) return;
-  tracking = false;
-  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
-  clearInterval(timerInterval);
 
-  const miles = currentMiles;
-  const endPos = positions[positions.length-1];
-  const endAddress = endPos ? await reverseGeocode(endPos.lat, endPos.lon) : 'Unknown';
-  const now = new Date();
-  const rate = getRate();
+  const startOdoVal=parseFloat(document.getElementById('startOdo').value);
+  const endOdoVal=parseFloat(document.getElementById('endOdo').value);
 
-  pendingTripData = {
-    id: Date.now(),
-    date: now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }),
-    startAddress, endAddress,
-    miles: parseFloat(miles.toFixed(2)),
-    rate,
-    points: positions.length
-  };
+  if (isNaN(endOdoVal)||endOdoVal<=0) {
+    showToast('Please enter your end odometer reading'); return;
+  }
+  if (endOdoVal<=startOdoVal) {
+    showToast('End odometer must be greater than start'); return;
+  }
 
-  // Reset tracker UI
-  document.getElementById('odoCard').classList.remove('active');
-  document.getElementById('odoDisplay').classList.remove('active');
-  document.getElementById('odoDisplay').textContent = '0.00';
-  document.getElementById('metaDuration').textContent = '00:00';
-  document.getElementById('metaSpeed').textContent = '0';
-  document.getElementById('metaPoints').textContent = '0';
-  document.getElementById('statusPill').textContent = 'Ready';
-  document.getElementById('statusPill').classList.remove('active');
-  document.getElementById('btnEnd').classList.remove('visible');
-  document.getElementById('btnStart').classList.remove('hidden');
-  setGPS('locked', 'GPS ready');
-  positions = []; currentMiles = 0; tripStart = null;
+  document.getElementById('btnEnd').disabled=true;
+  setLoc('searching','Getting end location…');
 
-  // Show purpose modal
-  document.getElementById('purposeInput').value = '';
-  document.getElementById('purposeModal').classList.add('visible');
-  setTimeout(() => document.getElementById('purposeInput').focus(), 300);
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    setLoc('locked',`📍 ${endAddress}`);
+
+    const miles=endOdoVal-startOdoVal;
+    const rate=getRate();
+    const now=new Date();
+
+    pendingTripData={
+      id:Date.now(),
+      date:now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
+      startAddress, endAddress,
+      startOdo:startOdoVal, endOdo:endOdoVal,
+      miles:parseFloat(miles.toFixed(1)),
+      rate
+    };
+
+    // Reset UI
+    tracking=false;
+    clearInterval(timerInterval);
+    document.getElementById('tripCard').classList.remove('active');
+    document.getElementById('tripTimer').textContent='';
+    document.getElementById('tripStatusLabel').textContent='Enter odometer to start';
+    document.getElementById('startOdo').value='';
+    document.getElementById('startOdo').disabled=false;
+    document.getElementById('startOdo').classList.remove('filled');
+    document.getElementById('endOdo').value='';
+    document.getElementById('endOdo').disabled=true;
+    document.getElementById('milesDisplay').textContent='—';
+    document.getElementById('milesDisplay').classList.remove('has-value');
+    document.getElementById('milesPayDisplay').textContent='';
+    document.getElementById('statusPill').textContent='Ready';
+    document.getElementById('statusPill').classList.remove('active');
+    document.getElementById('btnEnd').classList.remove('visible');
+    document.getElementById('btnEnd').disabled=false;
+    document.getElementById('btnStart').classList.remove('hidden');
+    setLoc('','Location will be captured on start');
+    tripStart=null;
+
+    // Show purpose modal
+    document.getElementById('purposeModalSub').textContent=`${miles.toFixed(1)} miles · £${(miles*rate).toFixed(2)}`;
+    document.getElementById('purposeInput').value='';
+    document.getElementById('purposeModal').classList.add('visible');
+    setTimeout(()=>document.getElementById('purposeInput').focus(),300);
+  },()=>{
+    // If GPS fails for end location, still save with unknown address
+    endAddress='Unknown location';
+    document.getElementById('btnEnd').disabled=false;
+    setLoc('error','Could not get end location');
+    showToast('Saved without end location');
+    finaliseTripSave('Not specified');
+  },{enableHighAccuracy:true,timeout:10000});
 }
 
 function saveTripWithPurpose() {
-  if (!pendingTripData) return;
-  const purpose = document.getElementById('purposeInput').value.trim() || 'Not specified';
-  const trip = { ...pendingTripData, purpose };
-  pendingTripData = null;
-
-  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
-  trips.unshift(trip);
-  localStorage.setItem(TRIPS_KEY, JSON.stringify(trips));
-
+  const purpose=document.getElementById('purposeInput').value.trim()||'Not specified';
   document.getElementById('purposeModal').classList.remove('visible');
-  renderTrips();
-  showToast(`Saved — ${trip.miles.toFixed(2)} miles · £${(trip.miles * trip.rate).toFixed(2)}`);
+  finaliseTripSave(purpose);
 }
 
+function finaliseTripSave(purpose) {
+  if (!pendingTripData) return;
+  const trip={...pendingTripData,purpose};
+  pendingTripData=null;
+  const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
+  trips.unshift(trip);
+  localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
+  renderTrips();
+  showToast(`Saved — ${trip.miles.toFixed(1)} miles · £${(trip.miles*trip.rate).toFixed(2)}`);
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
 function renderTrips() {
-  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
-  const wrap = document.getElementById('tripListWrap');
-  const totalBar = document.getElementById('totalBar');
+  const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
+  const wrap=document.getElementById('tripListWrap');
+  const grid=document.getElementById('totalsGrid');
   if (!trips.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="icon">🚗</div>No trips logged yet.<br>Tap Start Trip to begin tracking.</div>`;
-    totalBar.style.display = 'none'; return;
+    wrap.innerHTML=`<div class="empty-state"><div class="icon">🚗</div>No trips logged yet.<br>Enter your odometer and tap Start Trip.</div>`;
+    grid.style.display='none'; return;
   }
-  const total = trips.reduce((s, t) => s + t.miles, 0);
-  document.getElementById('totalVal').textContent = total.toFixed(2);
-  totalBar.style.display = 'flex';
-  wrap.innerHTML = `<div class="trip-list">${trips.map(t => {
-    const pay = (t.miles * (t.rate || 0.25)).toFixed(2);
+  const now=new Date(), thisMonth=now.getMonth(), thisYear=now.getFullYear();
+  let monthMiles=0,monthPay=0,allMiles=0,allPay=0;
+  trips.forEach(t=>{
+    const rate=t.rate||0.25, pay=t.miles*rate;
+    allMiles+=t.miles; allPay+=pay;
+    const dp=t.date.split(' ');
+    const mo={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const d=dp.length===3?new Date(+dp[2],mo[dp[1]]??0,+dp[0]):new Date(t.date);
+    if (d.getMonth()===thisMonth&&d.getFullYear()===thisYear) { monthMiles+=t.miles; monthPay+=pay; }
+  });
+  document.getElementById('monthMiles').textContent=monthMiles.toFixed(1);
+  document.getElementById('monthPay').textContent='£'+monthPay.toFixed(2);
+  document.getElementById('allTimeMiles').textContent=allMiles.toFixed(1)+' mi · £'+allPay.toFixed(2);
+  document.getElementById('allTimeSub').textContent=trips.length+' trip'+(trips.length!==1?'s':'');
+  grid.style.display='grid';
+  wrap.innerHTML=`<div class="trip-list">${trips.map((t,i)=>{
+    const pay=(t.miles*(t.rate||0.25)).toFixed(2);
     return `<div class="trip-item">
       <div class="trip-addr">${t.startAddress}<br><span>→ ${t.endAddress}</span></div>
-      <div class="trip-miles">${t.miles.toFixed(2)}<small>miles · £${pay}</small></div>
-      <div class="trip-purpose">${t.purpose || ''}</div>
-      <div class="trip-date">${t.date}</div>
+      <div class="trip-miles">${t.miles.toFixed(1)}<small>miles · £${pay}</small></div>
+      <div class="trip-purpose">${t.purpose||''}</div>
+      <div class="trip-date">${t.date}${t.startOdo?` · ${t.startOdo}→${t.endOdo}`:''}</div>
+      <button class="trip-delete" onclick="deleteTrip(${i})" title="Delete">✕</button>
     </div>`;
   }).join('')}</div>`;
 }
 
+function deleteTrip(index) {
+  const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
+  if (!confirm('Delete this trip? This cannot be undone.')) return;
+  trips.splice(index,1);
+  localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
+  renderTrips(); showToast('Trip deleted');
+}
+
 function exportCSV() {
-  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   if (!trips.length) { showToast('No trips to export'); return; }
-  const header = 'Date,Start Location,End Location,Purpose,Mileage,Mile,£';
-  const rows = trips.map(t => {
-    const rate = t.rate || 0.25;
-    const pay = (t.miles * rate).toFixed(2);
-    return `"${t.date}","${t.startAddress}","${t.endAddress}","${t.purpose || ''}",${t.miles.toFixed(2)},${rate.toFixed(2)},${pay}`;
+  const header='Date,Start Location,End Location,Purpose,Mileage,Mile,£';
+  const rows=trips.map(t=>{
+    const rate=t.rate||0.25;
+    const pay=(t.miles*rate).toFixed(2);
+    return `"${t.date}","${t.startAddress}","${t.endAddress}","${t.purpose||''}",${t.miles.toFixed(1)},${rate.toFixed(2)},${pay}`;
   });
-  const csv = [header, ...rows].join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = `mileage_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  showToast('CSV downloaded');
+  const csv=[header,...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`mileage_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); showToast('CSV downloaded');
 }
 
 function clearLog() {
-  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   if (!trips.length) { showToast('Log is already empty'); return; }
   if (!confirm(`Delete all ${trips.length} trip${trips.length>1?'s':''}? This cannot be undone.`)) return;
-  trips = [];
-  localStorage.setItem(TRIPS_KEY, JSON.stringify(trips));
+  localStorage.setItem(TRIPS_KEY,'[]');
   renderTrips(); showToast('Log cleared');
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 init();

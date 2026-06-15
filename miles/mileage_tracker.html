@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MileTrack</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MileTrack">
+<meta name="theme-color" content="#0F172A">
+<script>
+// Generate and inject the apple-touch-icon as a canvas-drawn PNG at runtime
+(function(){
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#0F172A';
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 512, 512, 80);
+  ctx.fill();
+
+  // Subtle grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i = 40; i < 512; i += 40) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+  }
+
+  // Green glow circle behind road
+  const glow = ctx.createRadialGradient(256, 300, 20, 256, 300, 200);
+  glow.addColorStop(0, 'rgba(34,197,94,0.18)');
+  glow.addColorStop(1, 'rgba(34,197,94,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Road — perspective trapezoid
+  ctx.fillStyle = '#1E293B';
+  ctx.beginPath();
+  ctx.moveTo(180, 420);
+  ctx.lineTo(332, 420);
+  ctx.lineTo(290, 220);
+  ctx.lineTo(222, 220);
+  ctx.closePath();
+  ctx.fill();
+
+  // Road border
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Centre dashes on road
+  ctx.strokeStyle = '#22C55E';
+  ctx.lineWidth = 6;
+  ctx.setLineDash([22, 16]);
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(256, 410);
+  ctx.lineTo(256, 230);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Speedometer arc (bottom half circle)
+  const cx = 256, cy = 186, r = 110;
+  ctx.strokeStyle = '#293548';
+  ctx.lineWidth = 18;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, Math.PI * 0.75, Math.PI * 2.25);
+  ctx.stroke();
+
+  // Green progress arc (~70%)
+  const grad = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
+  grad.addColorStop(0, '#16a34a');
+  grad.addColorStop(1, '#22C55E');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 18;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, Math.PI * 0.75, Math.PI * 0.75 + (Math.PI * 1.5 * 0.72));
+  ctx.stroke();
+
+  // Needle
+  const needleAngle = Math.PI * 0.75 + (Math.PI * 1.5 * 0.72);
+  ctx.strokeStyle = '#F1F5F9';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(needleAngle) * 85, cy + Math.sin(needleAngle) * 85);
+  ctx.stroke();
+
+  // Centre dot
+  ctx.fillStyle = '#22C55E';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  // "MT" monogram text
+  ctx.fillStyle = '#F1F5F9';
+  ctx.font = 'bold 38px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('MT', cx, cy);
+
+  // Inject as apple-touch-icon
+  const url = c.toDataURL('image/png');
+  const link = document.createElement('link');
+  link.rel = 'apple-touch-icon';
+  link.href = url;
+  document.head.appendChild(link);
+
+  // Also favicon
+  const fav = document.createElement('link');
+  fav.rel = 'icon';
+  fav.type = 'image/png';
+  fav.href = url;
+  document.head.appendChild(fav);
+})();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0F172A;
+    --surface: #1E293B;
+    --surface2: #293548;
+    --border: rgba(255,255,255,0.08);
+    --green: #22C55E;
+    --green-dim: rgba(34,197,94,0.12);
+    --amber: #F59E0B;
+    --red: #EF4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --text: #F1F5F9;
+    --muted: #94A3B8;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 40px;
+  }
+
+  /* ── AUTH ── */
+  #authScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    width: 100%;
+    padding: 32px 24px;
+  }
+  #authScreen.hidden { display: none; }
+
+  .auth-logo { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: 0.1em; color: var(--green); margin-bottom: 6px; }
+  .auth-logo span { color: var(--muted); font-weight: 400; }
+  .auth-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 40px; text-align: center; }
+
+  .pin-dots { display: flex; gap: 14px; margin-bottom: 36px; }
+  .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--muted); background: transparent; transition: all 0.15s; }
+  .pin-dot.filled { background: var(--green); border-color: var(--green); transform: scale(1.1); }
+  .pin-dot.error { background: var(--red); border-color: var(--red); animation: shake 0.4s ease; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 72px); grid-template-rows: repeat(4, 72px); gap: 12px; }
+  .pin-key { width: 72px; height: 72px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--mono); font-size: 22px; font-weight: 700; cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .pin-key:active { background: var(--surface2); transform: scale(0.93); }
+  .pin-key.empty { border: none; background: transparent; cursor: default; pointer-events: none; }
+  .pin-key.del { font-size: 18px; color: var(--muted); }
+
+  .auth-msg { margin-top: 24px; font-size: 13px; color: var(--muted); text-align: center; min-height: 20px; }
+  .auth-msg.error { color: var(--red); }
+
+  .lockout-bar { margin-top: 16px; padding: 10px 16px; background: var(--red-dim); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; font-size: 13px; color: var(--red); text-align: center; display: none; }
+
+  /* ── APP ── */
+  #appScreen { display: none; flex-direction: column; align-items: center; width: 100%; }
+  #appScreen.visible { display: flex; }
+
+  header { width: 100%; padding: 20px 24px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .logo { font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: 0.08em; color: var(--green); }
+  .logo span { color: var(--muted); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
+  .status-pill { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; background: var(--surface2); color: var(--muted); transition: all 0.3s; }
+  .status-pill.active { background: var(--green-dim); color: var(--green); animation: pulse-pill 2s ease-in-out infinite; }
+  @keyframes pulse-pill { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  .btn-lock { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: 16px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
+  .btn-lock:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  main { width: 100%; max-width: 480px; padding: 32px 24px 0; display: flex; flex-direction: column; gap: 20px; }
+
+  .odometer-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px 24px; text-align: center; position: relative; overflow: hidden; }
+  .odometer-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(34,197,94,0.06) 0%, transparent 70%); pointer-events: none; opacity: 0; transition: opacity 0.5s; }
+  .odometer-card.active::before { opacity: 1; }
+
+  .odo-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .odo-display { font-family: var(--mono); font-size: clamp(52px, 16vw, 80px); font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.02em; transition: color 0.3s; }
+  .odo-display.active { color: var(--green); }
+  .odo-unit { font-family: var(--mono); font-size: 18px; font-weight: 400; color: var(--muted); margin-top: 6px; }
+
+  .odo-meta { display: flex; justify-content: center; gap: 24px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .meta-item { text-align: center; }
+  .meta-val { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--amber); }
+  .meta-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+
+  /* ── RATE SETTINGS ── */
+  .rate-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .rate-label { font-size: 13px; color: var(--muted); }
+  .rate-input-wrap { display: flex; align-items: center; gap: 6px; }
+  .rate-prefix { font-family: var(--mono); font-size: 15px; color: var(--amber); font-weight: 700; }
+  .rate-input { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--text); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; width: 70px; text-align: right; outline: none; }
+  .rate-input:focus { border-color: var(--amber); }
+  .rate-suffix { font-size: 12px; color: var(--muted); }
+
+  /* ── PURPOSE MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.visible { opacity: 1; pointer-events: all; }
+  .modal-sheet { background: var(--surface); border-radius: 20px 20px 0 0; padding: 24px 24px 40px; width: 100%; max-width: 480px; transform: translateY(40px); transition: transform 0.25s cubic-bezier(0.34,1.2,0.64,1); }
+  .modal-overlay.visible .modal-sheet { transform: translateY(0); }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 15px; font-family: var(--sans); color: var(--text); outline: none; margin-bottom: 16px; }
+  .modal-input:focus { border-color: var(--green); }
+  .modal-input::placeholder { color: var(--muted); }
+  .modal-btn { width: 100%; background: var(--green); color: #0a1a0f; font-size: 15px; font-weight: 600; padding: 14px; border-radius: 12px; border: none; cursor: pointer; font-family: var(--sans); }
+  .modal-btn:active { transform: scale(0.98); }
+
+  /* ── BUTTONS ── */
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn { font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 16px; border-radius: 14px; border: none; cursor: pointer; transition: all 0.15s; letter-spacing: 0.01em; }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+  .btn-start { background: var(--green); color: #0a1a0f; grid-column: 1 / -1; }
+  .btn-start:hover:not(:disabled) { background: #16a34a; }
+  .btn-end { background: var(--red); color: #fff; grid-column: 1 / -1; display: none; }
+  .btn-end.visible { display: block; }
+  .btn-start.hidden { display: none; }
+  .btn-export { background: var(--surface2); color: var(--text); font-size: 13px; }
+  .btn-clear { background: transparent; color: var(--muted); border: 1px solid var(--border); font-size: 13px; }
+  .btn-clear:hover:not(:disabled) { color: var(--red); border-color: var(--red); }
+
+  .gps-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; color: var(--muted); }
+  .gps-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; transition: background 0.3s; }
+  .gps-dot.locked { background: var(--green); animation: pulse-dot 1.5s ease-in-out infinite; }
+  .gps-dot.searching { background: var(--amber); animation: pulse-dot 0.8s ease-in-out infinite; }
+  .gps-dot.error { background: var(--red); animation: none; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  .trip-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
+  .trip-list::-webkit-scrollbar { width: 4px; }
+  .trip-list::-webkit-scrollbar-track { background: transparent; }
+  .trip-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .trip-item { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; align-items: start; }
+  .trip-addr { font-size: 13px; color: var(--text); line-height: 1.4; }
+  .trip-addr span { color: var(--muted); font-size: 11px; }
+  .trip-purpose { font-size: 11px; color: var(--amber); margin-top: 2px; }
+  .trip-miles { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--amber); text-align: right; grid-row: 1 / 4; align-self: center; }
+  .trip-miles small { font-family: var(--sans); font-size: 10px; font-weight: 500; color: var(--muted); display: block; text-align: right; }
+  .trip-date { font-size: 11px; color: var(--muted); }
+
+  .empty-state { text-align: center; padding: 32px 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .empty-state .icon { font-size: 28px; margin-bottom: 8px; }
+
+  .total-bar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .total-label { font-size: 13px; color: var(--muted); }
+  .total-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--amber); }
+
+  .change-pin-row { text-align: center; padding-bottom: 8px; }
+  .btn-change-pin { background: none; border: none; color: var(--muted); font-size: 12px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-family: var(--sans); }
+  .btn-change-pin:hover { color: var(--text); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 13px; font-weight: 500; padding: 10px 20px; border-radius: 99px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ── AUTH SCREEN ── -->
+<div id="authScreen">
+  <div class="auth-logo">MILE<span>TRACK</span></div>
+  <div class="auth-subtitle" id="authSubtitle">Loading…</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinKey('1')">1</button>
+    <button class="pin-key" onclick="pinKey('2')">2</button>
+    <button class="pin-key" onclick="pinKey('3')">3</button>
+    <button class="pin-key" onclick="pinKey('4')">4</button>
+    <button class="pin-key" onclick="pinKey('5')">5</button>
+    <button class="pin-key" onclick="pinKey('6')">6</button>
+    <button class="pin-key" onclick="pinKey('7')">7</button>
+    <button class="pin-key" onclick="pinKey('8')">8</button>
+    <button class="pin-key" onclick="pinKey('9')">9</button>
+    <button class="pin-key empty"></button>
+    <button class="pin-key" onclick="pinKey('0')">0</button>
+    <button class="pin-key del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="auth-msg" id="authMsg"></div>
+  <div class="lockout-bar" id="lockoutBar"></div>
+</div>
+
+<!-- ── PURPOSE MODAL ── -->
+<div class="modal-overlay" id="purposeModal">
+  <div class="modal-sheet">
+    <div class="modal-title">What was this trip for?</div>
+    <input class="modal-input" id="purposeInput" type="text" placeholder="e.g. Client visit, site survey…" maxlength="80">
+    <button class="modal-btn" onclick="saveTripWithPurpose()">Save Trip</button>
+  </div>
+</div>
+
+<!-- ── APP SCREEN ── -->
+<div id="appScreen">
+  <header>
+    <div class="logo">MILE<span>TRACK</span></div>
+    <div class="header-right">
+      <div class="status-pill" id="statusPill">Ready</div>
+      <button class="btn-lock" onclick="lockApp()" title="Lock">🔒</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="gps-bar">
+      <div class="gps-dot" id="gpsDot"></div>
+      <span id="gpsText">Waiting for GPS…</span>
+    </div>
+
+    <div class="odometer-card" id="odoCard">
+      <div class="odo-label">Current trip</div>
+      <div class="odo-display" id="odoDisplay">0.00</div>
+      <div class="odo-unit">miles</div>
+      <div class="odo-meta">
+        <div class="meta-item">
+          <div class="meta-val" id="metaDuration">00:00</div>
+          <div class="meta-label">Duration</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-val" id="metaSpeed">0</div>
+          <div class="meta-label">mph now</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-val" id="metaPoints">0</div>
+          <div class="meta-label">GPS points</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rate setting -->
+    <div class="rate-card">
+      <span class="rate-label">Rate per mile</span>
+      <div class="rate-input-wrap">
+        <span class="rate-prefix">£</span>
+        <input class="rate-input" id="rateInput" type="number" step="0.01" min="0" max="9.99" value="0.25">
+        <span class="rate-suffix">/ mile</span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-start" id="btnStart" onclick="startTrip()">Start Trip</button>
+      <button class="btn btn-end" id="btnEnd" onclick="endTrip()">End &amp; Save Trip</button>
+      <button class="btn btn-export" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-clear" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div><div class="section-title">Trip log</div></div>
+
+    <div id="tripListWrap">
+      <div class="empty-state">
+        <div class="icon">🚗</div>
+        No trips logged yet.<br>Tap Start Trip to begin tracking.
+      </div>
+    </div>
+
+    <div class="total-bar" id="totalBar" style="display:none">
+      <span class="total-label">Total logged miles</span>
+      <span class="total-val" id="totalVal">0.00</span>
+    </div>
+
+    <div class="change-pin-row">
+      <button class="btn-change-pin" onclick="initiateChangePIN()">Change PIN</button>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const PIN_KEY     = 'mt_pin_hash';
+const FAIL_KEY    = 'mt_fail_count';
+const LOCKOUT_KEY = 'mt_lockout_until';
+const TRIPS_KEY   = 'miletrack_trips_v2';
+const SESSION_KEY = 'mt_session';
+const RATE_KEY    = 'mt_rate';
+const MAX_FAILS   = 5;
+const LOCKOUT_MS  = 5 * 60 * 1000;
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+let pinBuffer = '';
+let authMode  = 'login';
+let pendingNewPin = '';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+const getStoredHash   = () => localStorage.getItem(PIN_KEY);
+const getFailCount    = () => parseInt(localStorage.getItem(FAIL_KEY) || '0');
+const getLockoutUntil = () => parseInt(localStorage.getItem(LOCKOUT_KEY) || '0');
+const setFailCount    = n  => localStorage.setItem(FAIL_KEY, n);
+const setLockoutUntil = t  => localStorage.setItem(LOCKOUT_KEY, t);
+const clearFailures   = () => { localStorage.removeItem(FAIL_KEY); localStorage.removeItem(LOCKOUT_KEY); };
+const setSessionValid = () => sessionStorage.setItem(SESSION_KEY, '1');
+const isSessionValid  = () => sessionStorage.getItem(SESSION_KEY) === '1';
+const clearSession    = () => sessionStorage.removeItem(SESSION_KEY);
+
+function isLockedOut() {
+  const until = getLockoutUntil();
+  if (Date.now() < until) return true;
+  if (until > 0) clearFailures();
+  return false;
+}
+const remainingLockout = () => Math.ceil((getLockoutUntil() - Date.now()) / 1000);
+
+function updateDots(count, state) {
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById('d' + i);
+    d.className = 'pin-dot' + (state === 'error' ? ' error' : (i < count ? ' filled' : ''));
+  }
+}
+function setAuthMsg(msg, isError) {
+  const el = document.getElementById('authMsg');
+  el.textContent = msg;
+  el.className = 'auth-msg' + (isError ? ' error' : '');
+}
+function setPinPadDisabled(disabled) {
+  document.querySelectorAll('.pin-key').forEach(k => k.disabled = disabled);
+}
+function showLockout() {
+  const bar = document.getElementById('lockoutBar');
+  if (!isLockedOut()) { bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  setPinPadDisabled(true);
+  const tick = setInterval(() => {
+    if (!isLockedOut()) { bar.style.display = 'none'; setPinPadDisabled(false); setAuthMsg(''); clearInterval(tick); return; }
+    bar.textContent = `Too many wrong attempts. Try again in ${remainingLockout()}s.`;
+  }, 1000);
+  bar.textContent = `Too many wrong attempts. Try again in ${remainingLockout()}s.`;
+}
+
+function pinKey(digit) {
+  if (isLockedOut() || pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updateDots(pinBuffer.length, 'normal');
+  if (pinBuffer.length === 4) setTimeout(submitPIN, 120);
+}
+function pinDel() {
+  if (!pinBuffer.length) return;
+  pinBuffer = pinBuffer.slice(0, -1);
+  updateDots(pinBuffer.length, 'normal');
+}
+
+async function submitPIN() {
+  const hash = await sha256(pinBuffer);
+  pinBuffer = '';
+
+  if (authMode === 'setup') {
+    localStorage.setItem(PIN_KEY, hash);
+    clearFailures();
+    setAuthMsg('PIN set!');
+    setTimeout(unlockApp, 300);
+
+  } else if (authMode === 'login') {
+    if (isLockedOut()) { updateDots(0, 'error'); showLockout(); return; }
+    if (hash === getStoredHash()) {
+      clearFailures(); setSessionValid();
+      updateDots(4, 'normal');
+      setTimeout(unlockApp, 200);
+    } else {
+      const fails = getFailCount() + 1;
+      setFailCount(fails);
+      updateDots(4, 'error');
+      if (fails >= MAX_FAILS) { setLockoutUntil(Date.now() + LOCKOUT_MS); setAuthMsg(''); showLockout(); }
+      else setAuthMsg(`Incorrect PIN. ${MAX_FAILS - fails} attempt${MAX_FAILS - fails !== 1 ? 's' : ''} remaining.`, true);
+      setTimeout(() => updateDots(0, 'normal'), 600);
+    }
+
+  } else if (authMode === 'change_old') {
+    if (hash === getStoredHash()) {
+      authMode = 'change_new';
+      document.getElementById('authSubtitle').textContent = 'Enter your new PIN';
+      setAuthMsg(''); updateDots(0, 'normal');
+    } else {
+      updateDots(4, 'error'); setAuthMsg('Incorrect current PIN.', true);
+      setTimeout(() => updateDots(0, 'normal'), 600);
+    }
+
+  } else if (authMode === 'change_new') {
+    pendingNewPin = hash;
+    authMode = 'change_confirm';
+    document.getElementById('authSubtitle').textContent = 'Confirm your new PIN';
+    setAuthMsg(''); updateDots(0, 'normal');
+
+  } else if (authMode === 'change_confirm') {
+    if (hash === pendingNewPin) {
+      localStorage.setItem(PIN_KEY, hash);
+      authMode = 'login'; pendingNewPin = '';
+      setAuthMsg('PIN changed successfully!');
+      setTimeout(() => { document.getElementById('authScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('visible'); setAuthMsg(''); }, 500);
+    } else {
+      updateDots(4, 'error'); setAuthMsg('PINs do not match. Try again.', true);
+      authMode = 'change_new'; pendingNewPin = '';
+      setTimeout(() => { updateDots(0, 'normal'); document.getElementById('authSubtitle').textContent = 'Enter your new PIN'; }, 700);
+    }
+  }
+}
+
+function unlockApp() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.add('visible');
+  updateDots(0, 'normal'); setAuthMsg('');
+  loadRate(); renderTrips();
+}
+
+function lockApp() {
+  clearSession(); pinBuffer = ''; authMode = 'login';
+  document.getElementById('authSubtitle').textContent = 'Enter your PIN to continue';
+  updateDots(0, 'normal'); setAuthMsg('');
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('appScreen').classList.remove('visible');
+  showLockout();
+}
+
+function initiateChangePIN() {
+  authMode = 'change_old'; pinBuffer = '';
+  document.getElementById('authSubtitle').textContent = 'Enter your current PIN';
+  updateDots(0, 'normal'); setAuthMsg('');
+  document.getElementById('appScreen').classList.remove('visible');
+  document.getElementById('authScreen').classList.remove('hidden');
+}
+
+function init() {
+  const hasPin = !!getStoredHash();
+  if (!hasPin) { authMode = 'setup'; document.getElementById('authSubtitle').textContent = 'Choose a 4-digit PIN to protect your data'; }
+  else if (isSessionValid()) { unlockApp(); return; }
+  else { authMode = 'login'; document.getElementById('authSubtitle').textContent = 'Enter your PIN to continue'; showLockout(); }
+}
+
+// ─── RATE ─────────────────────────────────────────────────────────────────────
+function loadRate() {
+  const saved = parseFloat(localStorage.getItem(RATE_KEY) || '0.25');
+  document.getElementById('rateInput').value = saved.toFixed(2);
+}
+function getRate() {
+  const v = parseFloat(document.getElementById('rateInput').value);
+  const rate = isNaN(v) ? 0.25 : v;
+  localStorage.setItem(RATE_KEY, rate);
+  return rate;
+}
+
+// ─── TRACKER ─────────────────────────────────────────────────────────────────
+let trips = [];
+let tracking = false;
+let watchId = null;
+let positions = [];
+let tripStart = null;
+let startAddress = '';
+let currentMiles = 0;
+let timerInterval = null;
+let pendingTripData = null;
+
+function haversine(a, b) {
+  const R = 3958.8;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLon = (b.lon - a.lon) * Math.PI / 180;
+  const s = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
+}
+function totalDistance(pts) {
+  let d = 0;
+  for (let i = 1; i < pts.length; i++) d += haversine(pts[i-1], pts[i]);
+  return d;
+}
+async function reverseGeocode(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`);
+    const d = await r.json();
+    const a = d.address || {};
+    const road = a.road || a.pedestrian || a.path || '';
+    const town = a.town || a.city || a.village || a.suburb || '';
+    return [road, town].filter(Boolean).join(', ') || d.display_name?.split(',').slice(0,2).join(',') || 'Unknown location';
+  } catch { return 'Unknown location'; }
+}
+function setGPS(state, text) {
+  document.getElementById('gpsDot').className = 'gps-dot' + (state ? ' '+state : '');
+  document.getElementById('gpsText').textContent = text;
+}
+function updateOdo() {
+  currentMiles = positions.length > 1 ? totalDistance(positions) : 0;
+  document.getElementById('odoDisplay').textContent = currentMiles.toFixed(2);
+  document.getElementById('metaPoints').textContent = positions.length;
+}
+function updateTimer() {
+  if (!tripStart) return;
+  const s = Math.floor((Date.now()-tripStart)/1000);
+  document.getElementById('metaDuration').textContent =
+    `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+}
+
+function startTrip() {
+  if (!navigator.geolocation) { showToast('GPS not available on this device'); return; }
+  setGPS('searching', 'Getting your location…');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    positions = [{ lat: pos.coords.latitude, lon: pos.coords.longitude }];
+    tripStart = Date.now(); tracking = true;
+    startAddress = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+    setGPS('locked', `GPS locked · ${startAddress}`);
+    document.getElementById('odoCard').classList.add('active');
+    document.getElementById('odoDisplay').classList.add('active');
+    document.getElementById('statusPill').textContent = 'Tracking';
+    document.getElementById('statusPill').classList.add('active');
+    document.getElementById('btnStart').classList.add('hidden');
+    document.getElementById('btnEnd').classList.add('visible');
+    timerInterval = setInterval(updateTimer, 1000);
+    watchId = navigator.geolocation.watchPosition(p => {
+      if (!tracking) return;
+      const pt = { lat: p.coords.latitude, lon: p.coords.longitude };
+      if (!positions.length || haversine(positions[positions.length-1], pt) > 0.003) { positions.push(pt); updateOdo(); }
+      const mph = p.coords.speed != null ? (p.coords.speed * 2.237).toFixed(0) : '--';
+      document.getElementById('metaSpeed').textContent = mph;
+    }, () => setGPS('error', 'GPS signal lost — trying to reconnect…'),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 });
+    showToast('Trip started');
+  }, () => { setGPS('error', 'Location access denied'); showToast('Could not get location'); },
+  { enableHighAccuracy: true, timeout: 15000 });
+}
+
+async function endTrip() {
+  if (!tracking) return;
+  tracking = false;
+  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+  clearInterval(timerInterval);
+
+  const miles = currentMiles;
+  const endPos = positions[positions.length-1];
+  const endAddress = endPos ? await reverseGeocode(endPos.lat, endPos.lon) : 'Unknown';
+  const now = new Date();
+  const rate = getRate();
+
+  pendingTripData = {
+    id: Date.now(),
+    date: now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }),
+    startAddress, endAddress,
+    miles: parseFloat(miles.toFixed(2)),
+    rate,
+    points: positions.length
+  };
+
+  // Reset tracker UI
+  document.getElementById('odoCard').classList.remove('active');
+  document.getElementById('odoDisplay').classList.remove('active');
+  document.getElementById('odoDisplay').textContent = '0.00';
+  document.getElementById('metaDuration').textContent = '00:00';
+  document.getElementById('metaSpeed').textContent = '0';
+  document.getElementById('metaPoints').textContent = '0';
+  document.getElementById('statusPill').textContent = 'Ready';
+  document.getElementById('statusPill').classList.remove('active');
+  document.getElementById('btnEnd').classList.remove('visible');
+  document.getElementById('btnStart').classList.remove('hidden');
+  setGPS('locked', 'GPS ready');
+  positions = []; currentMiles = 0; tripStart = null;
+
+  // Show purpose modal
+  document.getElementById('purposeInput').value = '';
+  document.getElementById('purposeModal').classList.add('visible');
+  setTimeout(() => document.getElementById('purposeInput').focus(), 300);
+}
+
+function saveTripWithPurpose() {
+  if (!pendingTripData) return;
+  const purpose = document.getElementById('purposeInput').value.trim() || 'Not specified';
+  const trip = { ...pendingTripData, purpose };
+  pendingTripData = null;
+
+  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  trips.unshift(trip);
+  localStorage.setItem(TRIPS_KEY, JSON.stringify(trips));
+
+  document.getElementById('purposeModal').classList.remove('visible');
+  renderTrips();
+  showToast(`Saved — ${trip.miles.toFixed(2)} miles · £${(trip.miles * trip.rate).toFixed(2)}`);
+}
+
+function renderTrips() {
+  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  const wrap = document.getElementById('tripListWrap');
+  const totalBar = document.getElementById('totalBar');
+  if (!trips.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="icon">🚗</div>No trips logged yet.<br>Tap Start Trip to begin tracking.</div>`;
+    totalBar.style.display = 'none'; return;
+  }
+  const total = trips.reduce((s, t) => s + t.miles, 0);
+  document.getElementById('totalVal').textContent = total.toFixed(2);
+  totalBar.style.display = 'flex';
+  wrap.innerHTML = `<div class="trip-list">${trips.map(t => {
+    const pay = (t.miles * (t.rate || 0.25)).toFixed(2);
+    return `<div class="trip-item">
+      <div class="trip-addr">${t.startAddress}<br><span>→ ${t.endAddress}</span></div>
+      <div class="trip-miles">${t.miles.toFixed(2)}<small>miles · £${pay}</small></div>
+      <div class="trip-purpose">${t.purpose || ''}</div>
+      <div class="trip-date">${t.date}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function exportCSV() {
+  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  if (!trips.length) { showToast('No trips to export'); return; }
+  const header = 'Date,Start Location,End Location,Purpose,Mileage,Mile,£';
+  const rows = trips.map(t => {
+    const rate = t.rate || 0.25;
+    const pay = (t.miles * rate).toFixed(2);
+    return `"${t.date}","${t.startAddress}","${t.endAddress}","${t.purpose || ''}",${t.miles.toFixed(2)},${rate.toFixed(2)},${pay}`;
+  });
+  const csv = [header, ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `mileage_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV downloaded');
+}
+
+function clearLog() {
+  trips = JSON.parse(localStorage.getItem(TRIPS_KEY) || '[]');
+  if (!trips.length) { showToast('Log is already empty'); return; }
+  if (!confirm(`Delete all ${trips.length} trip${trips.length>1?'s':''}? This cannot be undone.`)) return;
+  trips = [];
+  localStorage.setItem(TRIPS_KEY, JSON.stringify(trips));
+  renderTrips(); showToast('Log cleared');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+init();
+</script>
+</body>
+</html>

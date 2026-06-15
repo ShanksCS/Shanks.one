@@ -339,7 +339,8 @@ const FAIL_KEY    = 'mt_fail_count';
 const LOCKOUT_KEY = 'mt_lockout_until';
 const TRIPS_KEY   = 'miletrack_trips_v3';
 const SESSION_KEY = 'mt_session';
-const RATE_KEY    = 'mt_rate';
+const RATE_KEY        = 'mt_rate';
+const ACTIVE_TRIP_KEY = 'mt_active_trip';
 const MAX_FAILS   = 5;
 const LOCKOUT_MS  = 5 * 60 * 1000;
 
@@ -440,7 +441,7 @@ async function submitPIN() {
 function unlockApp() {
   document.getElementById('authScreen').classList.add('hidden');
   document.getElementById('appScreen').classList.add('visible');
-  updateDots(0,'normal'); setAuthMsg(''); loadRate(); renderTrips();
+  updateDots(0,'normal'); setAuthMsg(''); loadRate(); renderTrips(); restoreActiveTrip();
 }
 function lockApp() {
   clearSession(); pinBuffer=''; authMode='login';
@@ -545,6 +546,10 @@ async function startTrip() {
 
     tracking=true;
     tripStart=Date.now();
+    // Persist trip state so page refresh restores it
+    localStorage.setItem(ACTIVE_TRIP_KEY, JSON.stringify({
+      startOdo: startOdoVal, startAddress, tripStart
+    }));
     document.getElementById('tripCard').classList.add('active');
     document.getElementById('startOdo').classList.add('filled');
     document.getElementById('startOdo').disabled=true;
@@ -648,8 +653,42 @@ function finaliseTripSave(purpose) {
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   trips.unshift(trip);
   localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
+  localStorage.removeItem(ACTIVE_TRIP_KEY);
   renderTrips();
   showToast(`Saved — ${trip.miles.toFixed(1)} miles · £${(trip.miles*trip.rate).toFixed(2)}`);
+}
+
+
+// ─── RESTORE IN-PROGRESS TRIP ────────────────────────────────────────────────
+function restoreActiveTrip() {
+  const saved = localStorage.getItem(ACTIVE_TRIP_KEY);
+  if (!saved) return;
+  try {
+    const state = JSON.parse(saved);
+    if (!state.startOdo || !state.tripStart) return;
+
+    // Restore variables
+    tracking = true;
+    tripStart = state.tripStart;
+    startAddress = state.startAddress || 'Unknown';
+
+    // Restore UI
+    document.getElementById('startOdo').value = state.startOdo;
+    document.getElementById('startOdo').disabled = true;
+    document.getElementById('startOdo').classList.add('filled');
+    document.getElementById('endOdo').disabled = false;
+    document.getElementById('tripCard').classList.add('active');
+    document.getElementById('tripStatusLabel').textContent = 'Trip in progress';
+    document.getElementById('statusPill').textContent = 'Tracking';
+    document.getElementById('statusPill').classList.add('active');
+    document.getElementById('btnStart').classList.add('hidden');
+    document.getElementById('btnEnd').classList.add('visible');
+    setLoc('locked', `📍 ${startAddress}`);
+    timerInterval = setInterval(updateTimer, 1000);
+    showToast('Trip restored — enter end odometer when you arrive');
+  } catch(e) {
+    localStorage.removeItem(ACTIVE_TRIP_KEY);
+  }
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
@@ -693,6 +732,7 @@ function deleteTrip(index) {
   if (!confirm('Delete this trip? This cannot be undone.')) return;
   trips.splice(index,1);
   localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
+  localStorage.removeItem(ACTIVE_TRIP_KEY);
   renderTrips(); showToast('Trip deleted');
 }
 

@@ -239,10 +239,122 @@
 
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;padding:10px 20px;border-radius:99px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:300;white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
-  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  /* ── SPLASH SCREEN ── */
+  #splashScreen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.6s ease,transform 0.6s ease}
+  #splashScreen.hide{opacity:0;transform:scale(1.05);pointer-events:none}
+  .splash-logo{font-family:var(--mono);font-size:28px;font-weight:700;letter-spacing:0.12em;color:var(--green);animation:splash-logo-in 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards}
+  .splash-logo span{color:var(--muted);font-weight:400}
+  .splash-sub{font-size:13px;color:var(--muted);margin-top:8px;opacity:0;animation:fade-in 0.5s ease 0.4s forwards}
+  .splash-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin-top:40px}
+  @keyframes splash-logo-in{0%{opacity:0;transform:translateY(20px) scale(0.9)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes fade-in{to{opacity:1}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── PAGE TRANSITIONS ── */
+  .screen{animation:none}
+  .screen.visible{animation:screen-in 0.4s cubic-bezier(0.34,1.1,0.64,1) forwards}
+  @keyframes screen-in{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+  #appScreen.visible{animation:screen-in 0.4s cubic-bezier(0.34,1.1,0.64,1) forwards}
+
+  /* ── TAB TRANSITIONS ── */
+  .tab-panel.active{animation:tab-in 0.3s cubic-bezier(0.34,1.1,0.64,1) forwards}
+  @keyframes tab-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+  .tab{position:relative;overflow:hidden}
+  .tab::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:2px;background:var(--green);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);transform:translateX(-50%)}
+  .tab.active::after{width:100%}
+
+  /* ── CARD ANIMATIONS ── */
+  .trip-card{transition:box-shadow 0.3s,border-color 0.3s,transform 0.2s}
+  .trip-card.active{box-shadow:0 0 40px rgba(34,197,94,0.12),0 0 80px rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.2)}
+  .total-card{transition:transform 0.2s,box-shadow 0.2s}
+  .total-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+  /* ── TRIP LIST ITEMS ── */
+  .trip-item{transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s;animation:trip-item-in 0.35s cubic-bezier(0.34,1.1,0.64,1) both}
+  .trip-item:hover{transform:translateX(2px);border-color:rgba(255,255,255,0.12)}
+  @keyframes trip-item-in{0%{opacity:0;transform:translateX(-12px)}100%{opacity:1;transform:translateX(0)}}
+
+  /* ── MONTH ITEMS ── */
+  .month-item{animation:trip-item-in 0.35s cubic-bezier(0.34,1.1,0.64,1) both;transition:transform 0.15s}
+  .month-item:hover{transform:translateX(2px)}
+
+  /* ── BUTTON ANIMATIONS ── */
+  .btn{position:relative;overflow:hidden}
+  .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.08);opacity:0;transition:opacity 0.15s}
+  .btn:hover::after{opacity:1}
+  .btn-green{transition:background 0.2s,transform 0.15s,box-shadow 0.2s}
+  .btn-green:hover:not(:disabled){box-shadow:0 4px 20px rgba(34,197,94,0.3)}
+  .btn-red{transition:background 0.2s,transform 0.15s,box-shadow 0.2s}
+  .btn-red:hover{box-shadow:0 4px 20px rgba(239,68,68,0.3)}
+
+  /* ── MILES COUNTER ── */
+  .miles-big{transition:color 0.4s,transform 0.3s}
+  .miles-big.has-value{animation:miles-pop 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+  @keyframes miles-pop{0%{transform:scale(0.95)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+  /* ── MODAL ── */
+  .modal-overlay{transition:opacity 0.25s}
+  .modal-sheet{transition:transform 0.3s cubic-bezier(0.34,1.15,0.64,1)}
+
+  /* ── SYNC PILL ── */
+  .sync-pill{transition:all 0.3s}
+  .sync-pill.syncing{animation:sync-spin 1s linear infinite}
+  @keyframes sync-spin{0%{opacity:1}50%{opacity:0.5}100%{opacity:1}}
+
+  /* ── PIN DOTS ── */
+  .pin-dot.filled{animation:dot-fill 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards}
+  @keyframes dot-fill{0%{transform:scale(0.6)}100%{transform:scale(1.1)}}
+
+  /* ── SUCCESS FLASH ── */
+  .flash-success{animation:flash-green 0.6s ease forwards}
+  @keyframes flash-green{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)}70%{box-shadow:0 0 0 16px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
+  /* ── TOAST ── */
+  .toast{transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s}
+  .toast.show{animation:toast-bounce 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards}
+  @keyframes toast-bounce{0%{transform:translateX(-50%) translateY(80px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
+
+  /* ── LOADING SKELETON ── */
+  .skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:skeleton-wave 1.5s ease-in-out infinite;border-radius:8px}
+  @keyframes skeleton-wave{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .skeleton-trip{height:80px;border-radius:12px;margin-bottom:8px}
+
+  /* ── STAGGER DELAYS for trip items ── */
+  .trip-item:nth-child(1){animation-delay:0ms}
+  .trip-item:nth-child(2){animation-delay:40ms}
+  .trip-item:nth-child(3){animation-delay:80ms}
+  .trip-item:nth-child(4){animation-delay:120ms}
+  .trip-item:nth-child(5){animation-delay:160ms}
+  .trip-item:nth-child(6){animation-delay:200ms}
+  .trip-item:nth-child(7){animation-delay:240ms}
+  .trip-item:nth-child(8){animation-delay:280ms}
+  .month-item:nth-child(1){animation-delay:0ms}
+  .month-item:nth-child(2){animation-delay:50ms}
+  .month-item:nth-child(3){animation-delay:100ms}
+  .month-item:nth-child(4){animation-delay:150ms}
+  .month-item:nth-child(5){animation-delay:200ms}
+  .month-item:nth-child(6){animation-delay:250ms}
+
+  /* ── LOCATION BAR ── */
+  .location-bar{transition:background 0.3s,border-color 0.3s}
+  .location-bar.active-loc{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2)}
+
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    #splashScreen{display:none!important}
+  }
+
 </style>
 </head>
 <body>
+
+<!-- SPLASH -->
+<div id="splashScreen">
+  <div class="splash-logo">MILE<span>TRACK</span></div>
+  <div class="splash-sub">Loading your data…</div>
+  <div class="splash-spinner"></div>
+</div>
 
 <!-- SIGN IN -->
 <div class="screen" id="signInScreen">
@@ -475,7 +587,7 @@
       <button class="btn-text muted" onclick="clearFilters()" style="font-size:11px">Clear filters</button>
     </div>
     <div id="tripListWrap">
-      <div class="empty-state"><div class="icon">🚗</div>No trips logged yet.</div>
+      <div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>
     </div>
   </div>
 
@@ -676,6 +788,7 @@ function switchTab(name){
 function enterApp(){
   ['signInScreen','pinScreen'].forEach(s=>document.getElementById(s).classList.remove('visible'));
   document.getElementById('appScreen').classList.add('visible');
+  hideSplash();
   if(sbUser)document.getElementById('accountEmail').textContent=sbUser.email||'';
   loadRate();loadTripsFromCloud();restoreActiveTrip();
   // Set default export dates
@@ -685,18 +798,26 @@ function enterApp(){
   document.getElementById('exportTo').value=today;
   document.getElementById('exportMonth').value=today.slice(0,7);
 }
+function hideSplash(){
+  const splash=document.getElementById('splashScreen');
+  if(splash){splash.classList.add('hide');setTimeout(()=>splash.remove(),700);}
+}
+
 function init(){
   if(sbToken&&sbUser){
     if(sessionStorage.getItem(PIN_SES)){enterApp();}
     else if(getPin()){pinMode='unlock';document.getElementById('pinSubtitle').textContent='Enter your PIN';showScreen('pinScreen');showLockout();}
     else{sessionStorage.setItem(PIN_SES,'1');enterApp();}
-  }else{showScreen('signInScreen');}
+  }else{showScreen('signInScreen');setTimeout(hideSplash,600);}
 }
 
 // ── SYNC ──
 function setSyncStatus(s,msg){const p=document.getElementById('syncPill');if(!p)return;p.textContent=msg;p.className='sync-pill '+s;}
 async function loadTripsFromCloud(){
   setSyncStatus('syncing','Syncing…');
+  // Show skeletons while loading
+  const wrap=document.getElementById('tripListWrap');
+  if(wrap)wrap.innerHTML='<div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>';
   try{const trips=await dbLoad();localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));renderTrips();renderMonthlySummary();updateTotals();setSyncStatus('ok','Synced ✓');setTimeout(()=>setSyncStatus('idle','Cloud'),3000);}
   catch(e){setSyncStatus('error','Offline');renderTrips();}
 }
@@ -725,7 +846,7 @@ async function reverseGeocode(lat,lon){
 function setLoc(state,text){document.getElementById('locDot').className='loc-dot'+(state?' '+state:'');document.getElementById('locText').textContent=text;}
 function updateMilesDisplay(){
   const s=parseFloat(document.getElementById('startOdo').value),e=parseFloat(document.getElementById('endOdo').value),r=getRate();
-  if(!isNaN(s)&&!isNaN(e)&&e>s){const m=e-s;document.getElementById('milesDisplay').textContent=m.toFixed(1);document.getElementById('milesDisplay').classList.add('has-value');document.getElementById('milesPayDisplay').textContent=`£${(m*r).toFixed(2)}`;}
+  if(!isNaN(s)&&!isNaN(e)&&e>s){const m=e-s;const el=document.getElementById('milesDisplay');el.textContent=m.toFixed(1);el.classList.add('has-value');el.style.transform='scale(1.05)';setTimeout(()=>el.style.transform='',200);document.getElementById('milesPayDisplay').textContent=`£${(m*r).toFixed(2)}`;}
   else{document.getElementById('milesDisplay').textContent='—';document.getElementById('milesDisplay').classList.remove('has-value');document.getElementById('milesPayDisplay').textContent='';}
 }
 function updateTimer(){
@@ -747,7 +868,7 @@ async function startTrip(){
   setLoc('searching','Getting your location…');
   navigator.geolocation.getCurrentPosition(async pos=>{
     startAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-    setLoc('locked',`📍 ${startAddress}`);
+    setLoc('locked',`📍 ${startAddress}`);document.querySelector('.location-bar').classList.add('active-loc');
     tracking=true;tripStart=Date.now();
     localStorage.setItem(ACTIVE_KEY,JSON.stringify({startOdo:sv,startAddress,tripStart}));
     document.getElementById('tripCard').classList.add('active');
@@ -796,7 +917,7 @@ function resetTripUI(){
   document.getElementById('milesDisplay').textContent='—';document.getElementById('milesDisplay').classList.remove('has-value');document.getElementById('milesPayDisplay').textContent='';
   document.getElementById('statusPill').textContent='Ready';document.getElementById('statusPill').classList.remove('active');
   document.getElementById('btnEnd').classList.remove('visible');document.getElementById('btnEnd').disabled=false;document.getElementById('btnStart').classList.remove('hidden');
-  setLoc('','Location will be captured on start');
+  setLoc('','Location will be captured on start');document.querySelector('.location-bar')?.classList.remove('active-loc');
 }
 
 function saveTripWithPurpose(){
@@ -810,7 +931,7 @@ async function finaliseTripSave(purpose){
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   trips.unshift(trip);localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
   renderTrips();renderMonthlySummary();updateTotals();
-  showToast(`Saved — ${trip.miles.toFixed(1)} miles · £${(trip.miles*trip.rate).toFixed(2)}`);
+  showToast(`Saved — ${trip.miles.toFixed(1)} miles · £${(trip.miles*trip.rate).toFixed(2)}`);document.getElementById('tripCard')?.classList.add('flash-success');setTimeout(()=>document.getElementById('tripCard')?.classList.remove('flash-success'),600);
   setSyncStatus('syncing','Saving…');
   try{const result=await dbSave(trip);if(result&&result[0]&&result[0].id){trips[0].id=result[0].id;localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));renderTrips();}setSyncStatus('ok','Saved ✓');setTimeout(()=>setSyncStatus('idle','Cloud'),3000);}
   catch(e){setSyncStatus('error','Saved offline');showToast('Saved locally — will sync when online');}

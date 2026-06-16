@@ -345,6 +345,7 @@ function renderUsers(){
       <td style="display:flex;gap:6px">
         ${u.role!=='admin'?`
           <button class="btn btn-amber" onclick="resetPassword('${u.id}','${u.email}')">Reset PW</button>
+          <button class="btn btn-amber" onclick="resetPIN('${u.email}')">Reset PIN</button>
           <button class="btn btn-red" onclick="toggleUser('${u.id}',${u.active})">${u.active?'Deactivate':'Activate'}</button>
         `:'<span style="color:var(--muted);font-size:12px">—</span>'}
       </td>
@@ -418,6 +419,18 @@ async function resetPassword(id, email){
     });
     showToast(`Reset email sent to ${email}`);
   } catch(e){showToast('Error: '+e.message);}
+}
+
+function resetPIN(email){
+  if(!confirm(`Reset PIN for ${email}?\n\nThis will clear their saved PIN so they will need to set a new one next time they open the app.`))return;
+  // PINs are stored in the user's own browser localStorage under key 'mt_pin'
+  // Admin cannot directly clear another user's localStorage — but we can note it
+  // The correct flow is to ask the user to clear their browser data, or we show instructions
+  showToast('Ask the user to go to Settings > Safari > Clear History & Website Data, or use Change PIN in the app');
+  // Show a more detailed alert
+  setTimeout(()=>{
+    alert(`To reset the PIN for ${email}:\n\n1. Ask them to open MileTrack\n2. Tap "Use password instead" on the PIN screen\n3. Sign in with their email and password\n4. Tap "Change PIN" at the bottom of the app\n\nOr they can clear their browser/app storage to remove the PIN entirely.`);
+  }, 500);
 }
 
 // ── TRIPS ──

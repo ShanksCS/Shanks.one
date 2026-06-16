@@ -350,15 +350,9 @@
       <div class="modal-label">End Location</div>
       <input class="modal-input" id="manEnd" type="text" placeholder="e.g. 88 King Rd, London">
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="modal-field">
-        <div class="modal-label">Start Odo</div>
-        <input class="modal-input" id="manStartOdo" type="number" placeholder="45230">
-      </div>
-      <div class="modal-field">
-        <div class="modal-label">End Odo</div>
-        <input class="modal-input" id="manEndOdo" type="number" placeholder="45267">
-      </div>
+    <div class="modal-field">
+      <div class="modal-label">Miles</div>
+      <input class="modal-input" id="manMiles" type="number" step="0.1" min="0.1" placeholder="e.g. 37.5">
     </div>
     <div class="modal-field">
       <div class="modal-label">Purpose</div>
@@ -844,17 +838,15 @@ async function saveManualTrip(){
   const date=document.getElementById('manDate').value;
   const startAddr=document.getElementById('manStart').value.trim();
   const endAddr=document.getElementById('manEnd').value.trim();
-  const startOdo=parseFloat(document.getElementById('manStartOdo').value);
-  const endOdo=parseFloat(document.getElementById('manEndOdo').value);
+  const miles=parseFloat(parseFloat(document.getElementById('manMiles').value).toFixed(1));
   const purpose=document.getElementById('manPurpose').value.trim()||'Not specified';
   const rate=parseFloat(document.getElementById('manRate').value)||0.25;
   const errEl=document.getElementById('manErr');
   if(!date||!startAddr||!endAddr){errEl.textContent='Please fill in date and locations';return;}
-  if(isNaN(startOdo)||isNaN(endOdo)||endOdo<=startOdo){errEl.textContent='Please enter valid odometer readings';return;}
-  const miles=parseFloat((endOdo-startOdo).toFixed(1));
+  if(isNaN(miles)||miles<=0){errEl.textContent='Please enter a valid mileage';return;}
   const dateObj=new Date(date);
   const formattedDate=dateObj.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  const trip={id:Date.now(),date:formattedDate,startAddress:startAddr,endAddress:endAddr,startOdo,endOdo,miles,rate,purpose};
+  const trip={id:Date.now(),date:formattedDate,startAddress:startAddr,endAddress:endAddr,miles,rate,purpose};
   closeModal('manualModal');
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   trips.unshift(trip);localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));

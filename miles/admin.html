@@ -252,15 +252,30 @@ async function adminSignIn() {
   btn.disabled=true; btn.textContent='Signing in…';
   try {
     const d=await sbAuthReq('token?grant_type=password',{email,password:pw});
-    // Verify admin role
-    const res=await fetch(`${SB_URL}/rest/v1/profiles?id=eq.${d.user.id}&select=role,active`,{
-      headers:{'apikey':SB_KEY,'Authorization':`Bearer ${d.access_token}`}
-    });
-    const profiles=await res.json();
-    if(!profiles||!profiles[0]||profiles[0].role!=='admin'){
+    // Verify admin role — fetch own profile using the new token
+    let profile = null;
+    try {
+      const res=await fetch(`${SB_URL}/rest/v1/profiles?id=eq.${d.user.id}&select=role,active`,{
+        headers:{
+          'apikey':SB_KEY,
+          'Authorization':`Bearer ${d.access_token}`,
+          'Content-Type':'application/json'
+        }
+      });
+      const profiles=await res.json();
+      profile = profiles && profiles[0] ? profiles[0] : null;
+    } catch(profileErr) {
+      console.warn('Profile fetch error:', profileErr);
+    }
+
+    // If profile fetch failed entirely, deny access
+    if(!profile){
+      throw new Error('Could not verify account role. Please check your Supabase RLS policies or contact support.');
+    }
+    if(profile.role !== 'admin'){
       throw new Error('Access denied. Admin accounts only.');
     }
-    if(!profiles[0].active){
+    if(!profile.active){
       throw new Error('Your account has been deactivated.');
     }
     aToken=d.access_token; aUser=d.user;

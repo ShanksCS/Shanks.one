@@ -669,8 +669,14 @@
         <div class="loc-dot" id="locDot"></div>
         <span id="locText" style="flex:1">Location will be captured on start</span>
       </div>
-      <button class="override-btn" id="overrideStartBtn" style="display:none" onclick="openSiteSearch('start')">📍 Override start location</button>
-      <button class="override-btn" id="overrideEndBtn" style="display:none" onclick="openSiteSearch('end')">📍 Override end location</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <span id="startSiteTag" style="display:none;font-size:11px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:99px;padding:3px 10px;color:var(--green);font-weight:600"></span>
+        <span id="endSiteTag" style="display:none;font-size:11px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:99px;padding:3px 10px;color:var(--amber);font-weight:600"></span>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="override-btn" id="overrideStartBtn" style="display:none" onclick="openSiteSearch('start')">📍 Change start site</button>
+        <button class="override-btn" id="overrideEndBtn" style="display:none" onclick="openSiteSearch('end')">📍 Set end site</button>
+      </div>
     </div>
 
     <div class="rate-card">
@@ -856,11 +862,11 @@ async function sbFetch(path,opts={},retry=true){
   const t=await res.text();return t?JSON.parse(t):null;
 }
 async function dbSave(trip){
-  return sbFetch('trips?select=id',{method:'POST',prefer:'return=representation',body:JSON.stringify({user_id:sbUser.id,date:trip.date,start_address:trip.startAddress,end_address:trip.endAddress,start_odo:trip.startOdo,end_odo:trip.endOdo,miles:trip.miles,rate:trip.rate,purpose:trip.purpose||''})});
+  return sbFetch('trips?select=id',{method:'POST',prefer:'return=representation',body:JSON.stringify({user_id:sbUser.id,date:trip.date,start_address:trip.startAddress,end_address:trip.endAddress,start_site:trip.startSite||'',end_site:trip.endSite||'',start_odo:trip.startOdo,end_odo:trip.endOdo,miles:trip.miles,rate:trip.rate,purpose:trip.purpose||''})});
 }
 async function dbLoad(){
   const rows=await sbFetch('trips?order=id.desc&limit=500');
-  return (rows||[]).map(r=>({id:r.id,date:r.date,startAddress:r.start_address,endAddress:r.end_address,startOdo:r.start_odo,endOdo:r.end_odo,miles:parseFloat(r.miles),rate:parseFloat(r.rate),purpose:r.purpose}));
+  return (rows||[]).map(r=>({id:r.id,date:r.date,startAddress:r.start_address,endAddress:r.end_address,startSite:r.start_site||'',endSite:r.end_site||'',startOdo:r.start_odo,endOdo:r.end_odo,miles:parseFloat(r.miles),rate:parseFloat(r.rate),purpose:r.purpose}));
 }
 async function dbDelete(id){return sbFetch(`trips?id=eq.${id}`,{method:'DELETE'});}
 async function dbUpdate(id,fields){
@@ -1136,23 +1142,30 @@ function filterSites(){
 }
 
 function selectSite(id, name, postcode){
-  const displayName=`${name} (${postcode})`;
+  // Use postcode as the address display, site name as reference
+  const address=postcode?postcode:name;
   closeSiteSearch();
   if(siteSearchMode==='start'){
-    startAddress=displayName;
-    setLoc('locked',`📍 ${displayName}`);
+    startAddress=address;
+    window._startSiteName=name;
+    setLoc('locked',`📍 ${address}`);
+    document.getElementById('startSiteTag').textContent='🏢 '+name;
+    document.getElementById('startSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
     if(tracking){
       const saved=JSON.parse(localStorage.getItem(ACTIVE_KEY)||'{}');
-      saved.startAddress=displayName;
+      saved.startAddress=address;
+      saved.startSite=name;
       localStorage.setItem(ACTIVE_KEY,JSON.stringify(saved));
     }
+    showToast('Start: '+name);
   } else {
-    // Store for end trip
-    window._overrideEndAddress=displayName;
-    setLoc('locked',`📍 ${displayName}`);
+    window._overrideEndAddress={address,siteName:name};
+    setLoc('locked',`📍 ${address}`);
+    document.getElementById('endSiteTag').textContent='🏢 '+name;
+    document.getElementById('endSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
-    showToast('End location set to '+name);
+    showToast('End: '+name);
   }
 }
 
@@ -1163,12 +1176,19 @@ async function useSiteGPS(){
     setLoc('searching','Getting your location...');
     navigator.geolocation.getCurrentPosition(async pos=>{
       const addr=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-      const postcode=(addr.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i)||[''])[0];
-      const matched=postcode?matchSiteByPostcode(postcode):null;
-      startAddress=matched?`${matched.name} (${matched.postcode})`:addr;
-      setLoc('locked',`📍 ${startAddress}`);
+      startAddress=addr;
+      const pcMatch=addr.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);
+      const matched=pcMatch?matchSiteByPostcode(pcMatch[0]):null;
+      window._startSiteName=matched?matched.name:'';
+      setLoc('locked',`📍 ${addr}`);
       document.querySelector('.location-bar').classList.add('active-loc');
-      if(matched)showToast(`Auto-matched: ${matched.name}`);
+      if(matched){
+        document.getElementById('startSiteTag').textContent='🏢 '+matched.name;
+        document.getElementById('startSiteTag').style.display='inline-block';
+        showToast(`Site matched: ${matched.name}`);
+      } else {
+        document.getElementById('startSiteTag').style.display='none';
+      }
     },()=>setLoc('error','Could not get location'),{enableHighAccuracy:true,timeout:15000});
   } else {
     window._overrideEndAddress=null;
@@ -1197,12 +1217,15 @@ async function saveNewSite(name){
   }
   // Set as selected location
   if(siteSearchMode==='start'){
-    startAddress=name;
-    setLoc('locked',`📍 ${name}`);
+    window._startSiteName=name;
+    setLoc('locked',`📍 ${startAddress||name}`);
+    document.getElementById('startSiteTag').textContent='🏢 '+name;
+    document.getElementById('startSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
   } else {
-    window._overrideEndAddress=name;
-    setLoc('locked',`📍 ${name}`);
+    window._overrideEndAddress={address:'',siteName:name};
+    document.getElementById('endSiteTag').textContent='🏢 '+name;
+    document.getElementById('endSiteTag').style.display='inline-block';
   }
 }
 
@@ -1251,12 +1274,21 @@ async function startTrip(){
   setLoc('searching','Getting your location…');
   navigator.geolocation.getCurrentPosition(async pos=>{
     const rawAddr=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-    // Try to auto-match by postcode
+    startAddress=rawAddr;
+    // Try to auto-match site by postcode
     const pcMatch=rawAddr.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);
     const matchedSite=pcMatch?matchSiteByPostcode(pcMatch[0]):null;
-    startAddress=matchedSite?`${matchedSite.name} (${matchedSite.postcode})`:rawAddr;
-    if(matchedSite)showToast(`Auto-matched: ${matchedSite.name}`);
-    setLoc('locked',`📍 ${startAddress}`);document.querySelector('.location-bar').classList.add('active-loc');
+    window._startSiteName=matchedSite?matchedSite.name:'';
+    if(matchedSite){
+      showToast(`Site matched: ${matchedSite.name}`);
+      setLoc('locked',`📍 ${rawAddr}`);
+      document.getElementById('startSiteTag').textContent='🏢 '+matchedSite.name;
+      document.getElementById('startSiteTag').style.display='inline-block';
+    } else {
+      setLoc('locked',`📍 ${rawAddr}`);
+      document.getElementById('startSiteTag').style.display='none';
+    }
+    document.querySelector('.location-bar').classList.add('active-loc');
     document.getElementById('overrideStartBtn').style.display='inline-block';
     tracking=true;tripStart=Date.now();
     localStorage.setItem(ACTIVE_KEY,JSON.stringify({startOdo:sv,startAddress,tripStart}));
@@ -1286,19 +1318,21 @@ async function endTrip(){
   setLoc('searching','Getting end location…');
   navigator.geolocation.getCurrentPosition(async pos=>{
     let endAddress;
+    let endSiteName='';
     if(window._overrideEndAddress){
-      endAddress=window._overrideEndAddress;
+      endAddress=window._overrideEndAddress.address;
+      endSiteName=window._overrideEndAddress.siteName||'';
       window._overrideEndAddress=null;
     } else {
       endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
-      // Try to auto-match by postcode
       const pcMatch=endAddress.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);
       const matchedSite=pcMatch?matchSiteByPostcode(pcMatch[0]):null;
-      if(matchedSite){endAddress=`${matchedSite.name} (${matchedSite.postcode})`;showToast(`Auto-matched: ${matchedSite.name}`);}
+      if(matchedSite){endSiteName=matchedSite.name;showToast(`Site matched: ${matchedSite.name}`);}
     }
     setLoc('locked',`📍 ${endAddress}`);
     const miles=ev-sv,rate=getRate(),now=new Date();
-    pendingTripData={id:Date.now(),date:now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),startAddress,endAddress,startOdo:sv,endOdo:ev,miles:parseFloat(miles.toFixed(1)),rate};
+    pendingTripData={id:Date.now(),date:now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),startAddress,endAddress,startSite:window._startSiteName||'',endSite:endSiteName,startOdo:sv,endOdo:ev,miles:parseFloat(miles.toFixed(1)),rate};
+    window._startSiteName='';
     resetTripUI();
     document.getElementById('purposeModalSub').textContent=`${miles.toFixed(1)} miles · £${(miles*rate).toFixed(2)}`;
     document.getElementById('purposeInput').value='';
@@ -1320,7 +1354,10 @@ function resetTripUI(){
   setLoc('','Location will be captured on start');document.querySelector('.location-bar')?.classList.remove('active-loc');
   document.getElementById('overrideStartBtn').style.display='none';
   document.getElementById('overrideEndBtn').style.display='none';
+  document.getElementById('startSiteTag').style.display='none';
+  document.getElementById('endSiteTag').style.display='none';
   window._overrideEndAddress=null;
+  window._startSiteName='';
 }
 
 function saveTripWithPurpose(){
@@ -1520,7 +1557,7 @@ function renderTrips(){
     const i=allTrips.findIndex(x=>x.id===t.id);
     const pay=(t.miles*(t.rate||0.25)).toFixed(2);
     return `<div class="trip-item">
-      <div class="trip-addr">${t.startAddress}<br><span>→ ${t.endAddress}</span></div>
+      <div class="trip-addr">${t.startAddress}${t.startSite?` <span style="color:var(--green);font-size:10px">(${t.startSite})</span>`:''}<br><span>→ ${t.endAddress}${t.endSite?` <span style="color:var(--amber);font-size:10px">(${t.endSite})</span>`:''}</span></div>
       <div class="trip-miles">${t.miles.toFixed(1)}<small>mi · £${pay}</small></div>
       <div class="trip-purpose">${t.purpose||''}</div>
       <div class="trip-date">${t.date}${t.startOdo?` · ${t.startOdo}→${t.endOdo}`:''}</div>
@@ -1721,7 +1758,7 @@ function exportCSV(type,monthVal){
     trips=trips.filter(t=>{const d=parseDate(t.date);return d.getFullYear()===y&&d.getMonth()===m-1;});
   }
   if(!trips.length){showToast('No trips found for that period');return;}
-  const header='Date,Start Location,End Location,Purpose,Mileage,Mile,£';
+  const header='Date,Start Location,Start Site,End Location,End Site,Purpose,Mileage,Mile,£';
   const rows=trips.map(t=>{const r=t.rate||0.25,p=(t.miles*r).toFixed(2);return `"${t.date}","${t.startAddress}","${t.endAddress}","${t.purpose||''}",${t.miles.toFixed(1)},${r.toFixed(2)},${p}`;});
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([header,...rows].join('\n'));

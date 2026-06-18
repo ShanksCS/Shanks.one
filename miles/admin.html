@@ -167,6 +167,32 @@
       </div>
     </div>
 
+    <!-- Sites -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Sites</div>
+        <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="loadSites()">↻ Refresh</button>
+      </div>
+      <div class="card">
+        <div class="form-row">
+          <div class="field">
+            <label>Site Name</label>
+            <input class="input" id="newSiteName" type="text" placeholder="e.g. XYZP, Example School">
+          </div>
+          <div class="field">
+            <label>Postcode</label>
+            <input class="input" id="newSitePostcode" type="text" placeholder="e.g. WF1 2QN" style="text-transform:uppercase">
+          </div>
+          <button class="btn btn-green" onclick="createSite()">Add</button>
+        </div>
+        <div class="form-err" id="siteErr"></div>
+        <div class="form-ok" id="siteOk"></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="sitesTable"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
     <!-- All Trips -->
     <div class="section">
       <div class="section-header">
@@ -308,7 +334,7 @@ function enterAdmin(){
   document.getElementById('loginScreen').classList.remove('visible');
   document.getElementById('adminScreen').classList.add('visible');
   if(aUser)document.getElementById('adminEmail').textContent=aUser.email||'';
-  loadUsers(); loadAllTrips();
+  loadUsers(); loadAllTrips(); loadSites();
 }
 
 // ── USERS ──
@@ -478,6 +504,73 @@ function updateStats(){
   document.getElementById('statTrips').textContent=allTrips.length;
   const totalMiles=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0),0);
   document.getElementById('statMiles').textContent=totalMiles.toFixed(1);
+}
+
+// ── SITES ──
+async function loadSites(){
+  document.getElementById('sitesTable').innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const rows=await aFetch('sites?order=name.asc&limit=500');
+    renderSitesTable(rows||[]);
+  }catch(e){
+    document.getElementById('sitesTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;
+  }
+}
+
+function renderSitesTable(sites){
+  if(!sites.length){document.getElementById('sitesTable').innerHTML='<div class="empty">No sites yet.</div>';return;}
+  const rows=sites.map(s=>`
+    <tr>
+      <td>${s.name}</td>
+      <td style="font-family:var(--mono);color:var(--amber)">${s.postcode||'—'}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-amber" onclick="editSite(${s.id},'${s.name.replace(/'/g,"\'")}','${(s.postcode||'').replace(/'/g,"\'")}')">Edit</button>
+        <button class="btn btn-red" onclick="deleteSite(${s.id},'${s.name.replace(/'/g,"\'")}')">Delete</button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('sitesTable').innerHTML=`
+    <div style="padding:10px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">${sites.length} sites</div>
+    <table>
+      <thead><tr><th>Name</th><th>Postcode</th><th>Actions</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+async function createSite(){
+  const name=document.getElementById('newSiteName').value.trim();
+  const postcode=document.getElementById('newSitePostcode').value.trim().toUpperCase();
+  const errEl=document.getElementById('siteErr');
+  const okEl=document.getElementById('siteOk');
+  errEl.textContent='';okEl.textContent='';
+  if(!name){errEl.textContent='Please enter a site name';return;}
+  try{
+    await aFetch('sites',{method:'POST',prefer:'return=minimal',body:JSON.stringify({name,postcode})});
+    okEl.textContent=`✓ "${name}" added`;
+    document.getElementById('newSiteName').value='';
+    document.getElementById('newSitePostcode').value='';
+    await loadSites();
+  }catch(e){errEl.textContent=e.message;}
+}
+
+async function editSite(id,currentName,currentPostcode){
+  const name=prompt('Edit site name:',currentName);
+  if(name===null)return;
+  const postcode=prompt('Edit postcode:',currentPostcode);
+  if(postcode===null)return;
+  try{
+    await aFetch(`sites?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({name:name.trim(),postcode:postcode.trim().toUpperCase()})});
+    showToast('Site updated');
+    await loadSites();
+  }catch(e){showToast('Error: '+e.message);}
+}
+
+async function deleteSite(id,name){
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  try{
+    await aFetch(`sites?id=eq.${id}`,{method:'DELETE'});
+    showToast(`"${name}" deleted`);
+    await loadSites();
+  }catch(e){showToast('Error: '+e.message);}
 }
 
 function exportAllCSV(){

@@ -176,7 +176,7 @@
   .month-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
   .month-name{font-size:14px;font-weight:600}
   .month-sub{font-size:11px;color:var(--muted);margin-top:2px}
-  .month-vals{text-align:right}
+  .month-vals{text-align:right;flex-shrink:0}
   .month-miles{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber)}
   .month-pay{font-size:12px;color:var(--green);margin-top:2px}
 
@@ -316,6 +316,50 @@
   @keyframes toast-bounce{0%{transform:translateX(-50%) translateY(80px);opacity:0}100%{transform:translateX(-50%) translateY(0);opacity:1}}
 
   /* ── LOADING SKELETON ── */
+
+
+  /* SUMMARY */
+  .year-nav{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-family:var(--sans)}
+  .year-nav:hover{background:var(--surface);border-color:rgba(255,255,255,0.15)}
+  .year-label{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);min-width:48px;text-align:center}
+  .year-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .year-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;transition:transform 0.2s}
+  .year-stat:hover{transform:translateY(-2px)}
+  .year-stat-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber)}
+  .year-stat-label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .chart-label{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .bar-chart{display:flex;align-items:flex-end;gap:4px;height:80px}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+  .bar{width:100%;border-radius:4px 4px 0 0;background:var(--surface2);transition:height 0.6s cubic-bezier(0.34,1.2,0.64,1),background 0.3s;min-height:2px;position:relative;cursor:pointer}
+  .bar.has-data{background:linear-gradient(to top,#16a34a,var(--green))}
+  .bar.current-month{background:linear-gradient(to top,#d97706,var(--amber))}
+  .bar:hover .bar-tip{display:block}
+  .bar-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-family:var(--mono);color:var(--text);white-space:nowrap;z-index:10;pointer-events:none}
+  .bar-months{display:flex;gap:4px;margin-top:6px}
+  .bar-month-label{flex:1;text-align:center;font-size:9px;color:var(--muted);font-weight:600;letter-spacing:0.03em}
+  .bar-month-label.current{color:var(--amber)}
+  .purpose-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+  .purpose-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .purpose-name{font-size:13px;font-weight:600}
+  .purpose-vals{font-size:12px;color:var(--muted)}
+  .purpose-bar-bg{height:4px;background:var(--surface2);border-radius:99px;overflow:hidden}
+  .purpose-bar-fill{height:100%;border-radius:99px;background:linear-gradient(to right,#16a34a,var(--green));transition:width 0.8s cubic-bezier(0.34,1.2,0.64,1)}
+  .month-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;animation:trip-item-in 0.35s cubic-bezier(0.34,1.1,0.64,1) both}
+  .month-item:hover{border-color:rgba(34,197,94,0.25);transform:translateX(3px);box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+  .month-item:active{transform:scale(0.98)}
+  .month-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .month-name{font-size:14px;font-weight:600}
+  .month-sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .month-vals{text-align:right;flex-shrink:0}
+  .month-miles{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber)}
+  .month-pay{font-size:12px;color:var(--green);margin-top:2px}
+  .month-chevron{font-size:12px;color:var(--muted);margin-left:6px}
+
+  .export-type-btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:7px 16px;border-radius:99px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s}
+  .export-type-btn.active{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,0.3)}
+  .export-section{animation:tab-in 0.25s ease forwards}
+
   .skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:skeleton-wave 1.5s ease-in-out infinite;border-radius:8px}
   @keyframes skeleton-wave{0%{background-position:200% 0}100%{background-position:-200% 0}}
   .skeleton-trip{height:80px;border-radius:12px;margin-bottom:8px}
@@ -339,6 +383,32 @@
   /* ── LOCATION BAR ── */
   .location-bar{transition:background 0.3s,border-color 0.3s}
   .location-bar.active-loc{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2)}
+
+
+  /* SITE SEARCH */
+  .site-search-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity 0.2s}
+  .site-search-overlay.visible{opacity:1;pointer-events:all}
+  .site-search-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 20px 48px;width:100%;max-width:480px;transform:translateY(40px);transition:transform 0.25s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;gap:12px;max-height:80vh}
+  .site-search-overlay.visible .site-search-sheet{transform:translateY(0)}
+  .site-search-title{font-size:15px;font-weight:600;color:var(--text)}
+  .site-search-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--sans);color:var(--text);outline:none;width:100%}
+  .site-search-input:focus{border-color:var(--green)}
+  .site-search-input::placeholder{color:var(--muted)}
+  .site-results{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:4px;min-height:0}
+  .site-result{padding:12px 14px;border-radius:10px;cursor:pointer;transition:background 0.15s;border:1px solid transparent}
+  .site-result:hover,.site-result:active{background:var(--surface2);border-color:var(--border)}
+  .site-result-name{font-size:14px;font-weight:600;color:var(--text)}
+  .site-result-postcode{font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+  .site-result-match{color:var(--green)}
+  .site-use-gps{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);margin-top:4px;transition:background 0.15s}
+  .site-use-gps:hover{background:rgba(34,197,94,0.18)}
+  .site-use-gps-label{font-size:14px;font-weight:600;color:var(--green)}
+  .site-use-gps-sub{font-size:11px;color:var(--muted);margin-top:1px}
+  .site-save-new{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);transition:background 0.15s}
+  .site-save-new:hover{background:rgba(59,130,246,0.15)}
+  .site-save-new-label{font-size:14px;font-weight:600;color:var(--blue)}
+  .override-btn{font-size:11px;font-weight:600;color:var(--muted);background:transparent;border:1px dashed var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:var(--sans);transition:all 0.15s;margin-top:4px;align-self:flex-start}
+  .override-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
 
   @media(prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
@@ -423,7 +493,8 @@
       <div class="modal-label">End Location</div>
       <input class="modal-input" id="editEnd" type="text" placeholder="End address">
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <!-- Odometer fields — shown for tracked trips -->
+    <div id="editOdoFields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="modal-field">
         <div class="modal-label">Start Odo</div>
         <input class="modal-input" id="editStartOdo" type="number" placeholder="45230">
@@ -432,6 +503,11 @@
         <div class="modal-label">End Odo</div>
         <input class="modal-input" id="editEndOdo" type="number" placeholder="45267">
       </div>
+    </div>
+    <!-- Miles field — shown for manually added trips -->
+    <div id="editMilesField" class="modal-field" style="display:none">
+      <div class="modal-label">Miles</div>
+      <input class="modal-input" id="editMiles" type="number" step="0.1" min="0.1" placeholder="e.g. 37.5">
     </div>
     <div class="modal-field">
       <div class="modal-label">Purpose</div>
@@ -480,6 +556,71 @@
   </div>
 </div>
 
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-sheet">
+    <div class="modal-title">Account</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--green-dim);border:1px solid rgba(34,197,94,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">👤</div>
+      <div>
+        <div style="font-size:13px;font-weight:600" id="settingsEmail"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px" id="settingsRole"></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="modal-btn-outline" onclick="closeModal('settingsModal');showChangePIN()" style="text-align:left;padding:14px 16px">🔑 Change PIN</button>
+      <button class="modal-btn-outline" id="settingsAdminBtn" onclick="window.location.href='admin.html'" style="text-align:left;padding:14px 16px;display:none;color:var(--amber);border-color:rgba(245,158,11,0.3)">⚙️ Admin Panel</button>
+      <button class="modal-btn-outline" onclick="closeModal('settingsModal');signOutFull()" style="text-align:left;padding:14px 16px;color:var(--red);border-color:rgba(239,68,68,0.2)">🚪 Sign Out</button>
+    </div>
+    <button class="modal-btn-outline" onclick="closeModal('settingsModal')">Close</button>
+  </div>
+</div>
+
+
+
+<!-- SITE SEARCH MODAL -->
+<div class="site-search-overlay" id="siteSearchOverlay">
+  <div class="site-search-sheet">
+    <div class="site-search-title" id="siteSearchTitle">Select location</div>
+    <input class="site-search-input" id="siteSearchInput" type="text" placeholder="Search by name, code or postcode…" oninput="filterSites()" autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="site-results" id="siteResults"></div>
+  </div>
+</div>
+
+<!-- MONTH DETAIL MODAL -->
+<div class="modal-overlay" id="monthModal">
+  <div class="modal-sheet" style="padding-bottom:40px;max-height:85vh">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div>
+        <div class="modal-title" id="monthModalTitle"></div>
+        <div class="modal-sub" id="monthModalSub"></div>
+      </div>
+      <button onclick="closeModal('monthModal')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;padding:6px 12px;cursor:pointer;font-family:var(--sans);flex-shrink:0;margin-left:12px">Close</button>
+    </div>
+
+    <!-- Month totals strip -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber)" id="mmTotalMiles">0</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-top:3px">Miles</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--green)" id="mmTotalPay">£0</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-top:3px">Earned</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)" id="mmTotalTrips">0</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-top:3px">Trips</div>
+      </div>
+    </div>
+
+    <!-- Trip list -->
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Journeys</div>
+    <div id="monthModalTrips" style="display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:calc(85vh - 280px)"></div>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="appScreen">
   <header>
@@ -487,6 +628,8 @@
     <div class="header-right">
       <div class="sync-pill" id="syncPill">—</div>
       <div class="status-pill" id="statusPill">Ready</div>
+      <a id="adminLink" href="admin.html" class="btn-lock" title="Admin Panel" style="display:none;text-decoration:none;font-size:14px">⚙️</a>
+      <button class="btn-lock" onclick="openSettings()" title="Settings">👤</button>
       <button class="btn-lock" onclick="lockToPIN()" title="Lock">🔒</button>
     </div>
   </header>
@@ -522,10 +665,12 @@
         <div class="miles-unit">miles</div>
         <div class="miles-pay" id="milesPayDisplay"></div>
       </div>
-      <div class="location-bar">
+      <div class="location-bar" id="locBar">
         <div class="loc-dot" id="locDot"></div>
-        <span id="locText">Location will be captured on start</span>
+        <span id="locText" style="flex:1">Location will be captured on start</span>
       </div>
+      <button class="override-btn" id="overrideStartBtn" style="display:none" onclick="openSiteSearch('start')">📍 Override start location</button>
+      <button class="override-btn" id="overrideEndBtn" style="display:none" onclick="openSiteSearch('end')">📍 Override end location</button>
     </div>
 
     <div class="rate-card">
@@ -541,8 +686,6 @@
       <button class="btn btn-green" id="btnStart" onclick="startTrip()">Start Trip</button>
       <button class="btn btn-red" id="btnEnd" onclick="endTrip()">End &amp; Save Trip</button>
       <button class="btn btn-blue" onclick="openManualModal()" style="grid-column:1/-1">+ Add Trip Manually</button>
-      <button class="btn btn-outline" onclick="exportCSV('all')">Export CSV</button>
-      <button class="btn btn-ghost" onclick="signOutFull()">Sign Out</button>
     </div>
 
     <div class="totals-grid" id="totalsGrid" style="display:none">
@@ -565,12 +708,7 @@
       </div>
     </div>
 
-    <div class="account-row">
-      <span class="account-email" id="accountEmail"></span>
-      <div class="account-actions">
-        <button class="btn-text muted" onclick="showChangePIN()">Change PIN</button>
-      </div>
-    </div>
+    <div id="accountEmail" style="display:none"></div>
   </div>
 
   <!-- TAB: LOG -->
@@ -593,8 +731,54 @@
 
   <!-- TAB: SUMMARY -->
   <div class="tab-panel" id="tab-summary">
+    <!-- Year selector -->
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="section-title">Summary</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="year-nav" onclick="changeYear(-1)">‹</button>
+        <span class="year-label" id="summaryYear"></span>
+        <button class="year-nav" onclick="changeYear(1)">›</button>
+      </div>
+    </div>
+
+    <!-- Year stats bar -->
+    <div class="year-stats" id="yearStats" style="display:none">
+      <div class="year-stat">
+        <div class="year-stat-val" id="yrTrips">0</div>
+        <div class="year-stat-label">Trips</div>
+      </div>
+      <div class="year-stat">
+        <div class="year-stat-val" id="yrMiles">0.0</div>
+        <div class="year-stat-label">Miles</div>
+      </div>
+      <div class="year-stat">
+        <div class="year-stat-val" id="yrPay">£0</div>
+        <div class="year-stat-label">Earned</div>
+      </div>
+      <div class="year-stat">
+        <div class="year-stat-val" id="yrAvg">0.0</div>
+        <div class="year-stat-label">Avg mi/trip</div>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <div class="chart-card" id="chartCard" style="display:none">
+      <div class="chart-label">Miles per month</div>
+      <div class="bar-chart" id="barChart"></div>
+      <div class="bar-months" id="barMonths"></div>
+    </div>
+
+    <!-- Top purpose breakdown -->
+    <div id="purposeBreakdown" style="display:none">
+      <div class="section-title-row" style="margin-bottom:10px">
+        <div class="section-title">By Purpose</div>
+      </div>
+      <div id="purposeList"></div>
+    </div>
+
+    <!-- Monthly cards -->
     <div class="section-title-row">
-      <div class="section-title">Monthly Breakdown</div>
+      <div class="section-title">Month by Month</div>
     </div>
     <div id="monthlySummary">
       <div class="empty-state"><div class="icon">📊</div>No trips yet.</div>
@@ -604,28 +788,34 @@
   <!-- TAB: EXPORT -->
   <div class="tab-panel" id="tab-export">
     <div class="export-card">
-      <div class="export-title">Export all trips</div>
-      <button class="modal-btn" onclick="exportCSV('all')" style="margin-top:0">Download All CSV</button>
-    </div>
-    <div class="export-card">
-      <div class="export-title">Export by date range</div>
-      <div class="modal-field">
-        <div class="modal-label">From</div>
-        <input class="modal-input" id="exportFrom" type="date">
+      <div class="export-title">Export options</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="export-type-btn active" onclick="setExportType('all',this)">All</button>
+        <button class="export-type-btn" onclick="setExportType('range',this)">Date Range</button>
+        <button class="export-type-btn" onclick="setExportType('month',this)">Month</button>
       </div>
-      <div class="modal-field">
-        <div class="modal-label">To</div>
-        <input class="modal-input" id="exportTo" type="date">
+      <div id="exportAll" class="export-section">
+        <div class="modal-sub">Export your complete trip history</div>
       </div>
-      <button class="modal-btn" onclick="exportCSV('range')" style="margin-top:0">Download Range CSV</button>
-    </div>
-    <div class="export-card">
-      <div class="export-title">Export by month</div>
-      <div class="modal-field">
-        <div class="modal-label">Month</div>
-        <input class="modal-input" id="exportMonth" type="month">
+      <div id="exportRange" class="export-section" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="modal-field">
+            <div class="modal-label">From</div>
+            <input class="modal-input" id="exportFrom" type="date">
+          </div>
+          <div class="modal-field">
+            <div class="modal-label">To</div>
+            <input class="modal-input" id="exportTo" type="date">
+          </div>
+        </div>
       </div>
-      <button class="modal-btn" onclick="exportCSV('month')" style="margin-top:0">Download Month CSV</button>
+      <div id="exportMonth" class="export-section" style="display:none">
+        <div class="modal-field">
+          <div class="modal-label">Month</div>
+          <input class="modal-input" id="exportMonthInput" type="month">
+        </div>
+      </div>
+      <button class="modal-btn" id="exportBtn" onclick="doExport()" style="margin-top:4px">Download CSV</button>
     </div>
   </div>
 </div>
@@ -642,6 +832,7 @@ const MAX_FAILS=5,LOCKOUT_MS=5*60*1000;
 
 let sbToken=localStorage.getItem(TOKEN_KEY);
 let sbUser=JSON.parse(localStorage.getItem(USER_KEY)||'null');
+let userRole=localStorage.getItem('mt_role')||'user';
 let editingTripIndex=null;
 
 // ── SUPABASE ──
@@ -673,7 +864,12 @@ async function dbLoad(){
 }
 async function dbDelete(id){return sbFetch(`trips?id=eq.${id}`,{method:'DELETE'});}
 async function dbUpdate(id,fields){
-  return sbFetch(`trips?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify(fields)});
+  return sbFetch(`trips?id=eq.${id}`,{
+    method:'PATCH',
+    prefer:'return=representation',
+    headers:{'Prefer':'return=representation'},
+    body:JSON.stringify(fields)
+  });
 }
 
 // ── AUTH ──
@@ -698,6 +894,8 @@ async function signIn(){
     if(!profiles[0].active)throw new Error('Your account has been deactivated. Contact your administrator.');
     sessionStorage.setItem('login_attempts','[]');
     sessionStorage.setItem(PIN_SES,'1');
+    userRole=profiles[0].role||'user';
+    localStorage.setItem('mt_role',userRole);
     enterApp();
   }catch(e){
     const attempts=JSON.parse(sessionStorage.getItem('login_attempts')||'[]');
@@ -716,7 +914,7 @@ async function forgotPassword(){
 
 function signOutFull(){
   if(!confirm('Sign out?'))return;
-  clearSession();localStorage.removeItem(PIN_KEY);localStorage.removeItem(FAIL_KEY);localStorage.removeItem(LOCK_KEY);
+  clearSession();localStorage.removeItem(PIN_KEY);localStorage.removeItem(FAIL_KEY);localStorage.removeItem(LOCK_KEY);localStorage.removeItem('mt_role');
   document.getElementById('appScreen').classList.remove('visible');
   showScreen('signInScreen');
   document.getElementById('siEmail').value='';document.getElementById('siPassword').value='';document.getElementById('siErr').textContent='';
@@ -790,7 +988,26 @@ function enterApp(){
   document.getElementById('appScreen').classList.add('visible');
   hideSplash();
   if(sbUser)document.getElementById('accountEmail').textContent=sbUser.email||'';
+  // Fetch role fresh every time in case it was set before mt_role existed
+  userRole=localStorage.getItem('mt_role')||'user';
+  const adminLink=document.getElementById('adminLink');
+  if(adminLink)adminLink.style.display=userRole==='admin'?'inline-flex':'none';
+  // Also fetch from Supabase to ensure it's current
+  if(sbToken&&sbUser){
+    fetch(`${SB_URL}/rest/v1/profiles?id=eq.${sbUser.id}&select=role`,{
+      headers:{'apikey':SB_KEY,'Authorization':`Bearer ${sbToken}`,'Accept':'application/json'}
+    }).then(r=>r.json()).then(d=>{
+      if(d&&d[0]){
+        userRole=d[0].role||'user';
+        localStorage.setItem('mt_role',userRole);
+        if(adminLink)adminLink.style.display=userRole==='admin'?'inline-flex':'none';
+        const adminBtn=document.getElementById('settingsAdminBtn');
+        if(adminBtn)adminBtn.style.display=userRole==='admin'?'block':'none';
+      }
+    }).catch(()=>{});
+  }
   loadRate();loadTripsFromCloud();restoreActiveTrip();
+  loadSites();
   // Set default export dates
   const today=new Date().toISOString().slice(0,10);
   const firstOfMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);
@@ -806,7 +1023,7 @@ function hideSplash(){
 function init(){
   if(sbToken&&sbUser){
     if(sessionStorage.getItem(PIN_SES)){enterApp();}
-    else if(getPin()){pinMode='unlock';document.getElementById('pinSubtitle').textContent='Enter your PIN';showScreen('pinScreen');showLockout();}
+    else if(getPin()){pinMode='unlock';document.getElementById('pinSubtitle').textContent='Enter your PIN';showScreen('pinScreen');showLockout();setTimeout(hideSplash,600);}
     else{sessionStorage.setItem(PIN_SES,'1');enterApp();}
   }else{showScreen('signInScreen');setTimeout(hideSplash,600);}
 }
@@ -826,8 +1043,174 @@ async function loadTripsFromCloud(){
 function loadRate(){const v=parseFloat(localStorage.getItem(RATE_KEY)||'0.25');document.getElementById('rateInput').value=v.toFixed(2);}
 function getRate(){const v=parseFloat(document.getElementById('rateInput').value);const r=isNaN(v)?0.25:v;localStorage.setItem(RATE_KEY,r);return r;}
 
+// ── SITES ──
+async function loadSites(){
+  if(sitesCache.length>0)return sitesCache;
+  try{
+    const rows=await sbFetch('sites?order=name.asc&limit=500');
+    sitesCache=(rows||[]);
+    return sitesCache;
+  }catch(e){return [];}
+}
+
+function normalisePostcode(pc){
+  return (pc||'').replace(/\s+/g,'').toUpperCase();
+}
+
+function matchSiteByPostcode(postcode){
+  const norm=normalisePostcode(postcode);
+  // Match on outward code (first part) or full postcode
+  return sitesCache.find(s=>{
+    const sp=normalisePostcode(s.postcode);
+    return sp===norm || sp.startsWith(norm.slice(0,4));
+  });
+}
+
+function openSiteSearch(mode){
+  siteSearchMode=mode;
+  document.getElementById('siteSearchTitle').textContent=mode==='start'?'Select start location':'Select end location';
+  document.getElementById('siteSearchInput').value='';
+  filterSites();
+  document.getElementById('siteSearchOverlay').classList.add('visible');
+  document.getElementById('siteSearchOverlay').onclick=function(e){if(e.target===this)closeSiteSearch();};
+  setTimeout(()=>document.getElementById('siteSearchInput').focus(),300);
+}
+
+function closeSiteSearch(){
+  document.getElementById('siteSearchOverlay').classList.remove('visible');
+}
+
+function filterSites(){
+  const q=(document.getElementById('siteSearchInput').value||'').toLowerCase().trim();
+  const wrap=document.getElementById('siteResults');
+  const sites=sitesCache;
+
+  // Filter
+  const filtered=q
+    ? sites.filter(s=>
+        s.name.toLowerCase().includes(q)||
+        normalisePostcode(s.postcode).includes(q.toUpperCase().replace(/\s/g,''))
+      ).slice(0,20)
+    : sites.slice(0,20);
+
+  // Highlight match
+  function hl(str){
+    if(!q)return str;
+    const idx=str.toLowerCase().indexOf(q);
+    if(idx<0)return str;
+    return str.slice(0,idx)+'<span class="site-result-match">'+str.slice(idx,idx+q.length)+'</span>'+str.slice(idx+q.length);
+  }
+
+  let html='';
+
+  // GPS option always at top
+  html+=`<div class="site-use-gps" onclick="useSiteGPS()">
+    <div style="font-size:20px">📡</div>
+    <div><div class="site-use-gps-label">Use my current GPS location</div>
+    <div class="site-use-gps-sub">Auto-detect address</div></div>
+  </div>`;
+
+  // Matching sites
+  html+=filtered.map(s=>`
+    <div class="site-result" onclick="selectSite(${s.id},'${s.name.replace(/'/g,"\'")}','${s.postcode}')">
+      <div class="site-result-name">${hl(s.name)}</div>
+      <div class="site-result-postcode">${hl(s.postcode)}</div>
+    </div>`).join('');
+
+  // Save new site option if typed something not in list
+  if(q&&q.length>2&&filtered.length===0){
+    html+=`<div class="site-save-new" onclick="saveNewSite('${q.replace(/'/g,"\'")}')">
+      <div style="font-size:20px">💾</div>
+      <div><div class="site-save-new-label">Save "${q}" as new site</div>
+      <div style="font-size:11px;color:var(--muted)">Adds to your sites list</div></div>
+    </div>`;
+  } else if(q&&q.length>2){
+    html+=`<div class="site-save-new" onclick="saveNewSite('${q.replace(/'/g,"\'")}')">
+      <div style="font-size:20px">💾</div>
+      <div><div class="site-save-new-label">Save "${q}" as new site</div>
+      <div style="font-size:11px;color:var(--muted)">Add to sites list for future use</div></div>
+    </div>`;
+  }
+
+  wrap.innerHTML=html;
+}
+
+function selectSite(id, name, postcode){
+  const displayName=`${name} (${postcode})`;
+  closeSiteSearch();
+  if(siteSearchMode==='start'){
+    startAddress=displayName;
+    setLoc('locked',`📍 ${displayName}`);
+    document.querySelector('.location-bar').classList.add('active-loc');
+    if(tracking){
+      const saved=JSON.parse(localStorage.getItem(ACTIVE_KEY)||'{}');
+      saved.startAddress=displayName;
+      localStorage.setItem(ACTIVE_KEY,JSON.stringify(saved));
+    }
+  } else {
+    // Store for end trip
+    window._overrideEndAddress=displayName;
+    setLoc('locked',`📍 ${displayName}`);
+    document.querySelector('.location-bar').classList.add('active-loc');
+    showToast('End location set to '+name);
+  }
+}
+
+async function useSiteGPS(){
+  closeSiteSearch();
+  if(siteSearchMode==='start'){
+    // Re-run GPS for start
+    setLoc('searching','Getting your location...');
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      const addr=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+      const postcode=(addr.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i)||[''])[0];
+      const matched=postcode?matchSiteByPostcode(postcode):null;
+      startAddress=matched?`${matched.name} (${matched.postcode})`:addr;
+      setLoc('locked',`📍 ${startAddress}`);
+      document.querySelector('.location-bar').classList.add('active-loc');
+      if(matched)showToast(`Auto-matched: ${matched.name}`);
+    },()=>setLoc('error','Could not get location'),{enableHighAccuracy:true,timeout:15000});
+  } else {
+    window._overrideEndAddress=null;
+    showToast('End location will use GPS when you tap End Trip');
+  }
+}
+
+async function saveNewSite(name){
+  closeSiteSearch();
+  // Save to Supabase
+  try{
+    const res=await sbFetch('sites?select=id,name,postcode',{
+      method:'POST',
+      prefer:'return=representation',
+      body:JSON.stringify({name,postcode:''})
+    });
+    if(res&&res[0]){
+      sitesCache.push(res[0]);
+      sitesCache.sort((a,b)=>a.name.localeCompare(b.name));
+    }
+    showToast(`"${name}" saved to sites`);
+  }catch(e){
+    // Save locally even if cloud fails
+    sitesCache.push({id:Date.now(),name,postcode:''});
+    showToast(`"${name}" saved locally`);
+  }
+  // Set as selected location
+  if(siteSearchMode==='start'){
+    startAddress=name;
+    setLoc('locked',`📍 ${name}`);
+    document.querySelector('.location-bar').classList.add('active-loc');
+  } else {
+    window._overrideEndAddress=name;
+    setLoc('locked',`📍 ${name}`);
+  }
+}
+
+
 // ── TRACKER ──
 let tracking=false,tripStart=null,startAddress='',timerInterval=null,pendingTripData=null;
+let sitesCache=[];
+let siteSearchMode='start'; // 'start' | 'end'
 
 async function reverseGeocode(lat,lon){
   try{
@@ -867,8 +1250,14 @@ async function startTrip(){
   document.getElementById('btnStart').disabled=true;
   setLoc('searching','Getting your location…');
   navigator.geolocation.getCurrentPosition(async pos=>{
-    startAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    const rawAddr=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    // Try to auto-match by postcode
+    const pcMatch=rawAddr.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);
+    const matchedSite=pcMatch?matchSiteByPostcode(pcMatch[0]):null;
+    startAddress=matchedSite?`${matchedSite.name} (${matchedSite.postcode})`:rawAddr;
+    if(matchedSite)showToast(`Auto-matched: ${matchedSite.name}`);
     setLoc('locked',`📍 ${startAddress}`);document.querySelector('.location-bar').classList.add('active-loc');
+    document.getElementById('overrideStartBtn').style.display='inline-block';
     tracking=true;tripStart=Date.now();
     localStorage.setItem(ACTIVE_KEY,JSON.stringify({startOdo:sv,startAddress,tripStart}));
     document.getElementById('tripCard').classList.add('active');
@@ -882,6 +1271,7 @@ async function startTrip(){
     document.getElementById('btnStart').classList.add('hidden');
     document.getElementById('btnStart').disabled=false;
     document.getElementById('btnEnd').classList.add('visible');
+    document.getElementById('overrideEndBtn').style.display='inline-block';
     timerInterval=setInterval(updateTimer,1000);
     showToast('Trip started — enter end odometer when you arrive');
   },()=>{setLoc('error','Could not get location');document.getElementById('btnStart').disabled=false;showToast('Could not get location');},{enableHighAccuracy:true,timeout:15000});
@@ -895,7 +1285,17 @@ async function endTrip(){
   document.getElementById('btnEnd').disabled=true;
   setLoc('searching','Getting end location…');
   navigator.geolocation.getCurrentPosition(async pos=>{
-    const endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+    let endAddress;
+    if(window._overrideEndAddress){
+      endAddress=window._overrideEndAddress;
+      window._overrideEndAddress=null;
+    } else {
+      endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
+      // Try to auto-match by postcode
+      const pcMatch=endAddress.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);
+      const matchedSite=pcMatch?matchSiteByPostcode(pcMatch[0]):null;
+      if(matchedSite){endAddress=`${matchedSite.name} (${matchedSite.postcode})`;showToast(`Auto-matched: ${matchedSite.name}`);}
+    }
     setLoc('locked',`📍 ${endAddress}`);
     const miles=ev-sv,rate=getRate(),now=new Date();
     pendingTripData={id:Date.now(),date:now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),startAddress,endAddress,startOdo:sv,endOdo:ev,miles:parseFloat(miles.toFixed(1)),rate};
@@ -918,6 +1318,9 @@ function resetTripUI(){
   document.getElementById('statusPill').textContent='Ready';document.getElementById('statusPill').classList.remove('active');
   document.getElementById('btnEnd').classList.remove('visible');document.getElementById('btnEnd').disabled=false;document.getElementById('btnStart').classList.remove('hidden');
   setLoc('','Location will be captured on start');document.querySelector('.location-bar')?.classList.remove('active-loc');
+  document.getElementById('overrideStartBtn').style.display='none';
+  document.getElementById('overrideEndBtn').style.display='none';
+  window._overrideEndAddress=null;
 }
 
 function saveTripWithPurpose(){
@@ -946,7 +1349,7 @@ function restoreActiveTrip(){
     document.getElementById('endOdo').disabled=false;document.getElementById('tripCard').classList.add('active');
     document.getElementById('tripStatusLabel').textContent='Trip in progress';document.getElementById('statusPill').textContent='Tracking';document.getElementById('statusPill').classList.add('active');
     document.getElementById('btnStart').classList.add('hidden');document.getElementById('btnEnd').classList.add('visible');
-    setLoc('locked',`📍 ${startAddress}`);timerInterval=setInterval(updateTimer,1000);
+    setLoc('locked',`📍 ${startAddress}`);document.getElementById('overrideStartBtn').style.display='inline-block';document.getElementById('overrideEndBtn').style.display='inline-block';timerInterval=setInterval(updateTimer,1000);
     showToast('Trip restored — enter end odometer when you arrive');
   }catch(e){localStorage.removeItem(ACTIVE_KEY);}
 }
@@ -992,17 +1395,25 @@ function openEditModal(index){
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   const t=trips[index];if(!t)return;
   editingTripIndex=index;
-  // Convert "15 Jun 2026" to "2026-06-15" for date input
   const mo={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
   const dp=t.date.split(' ');
   const isoDate=dp.length===3?`${dp[2]}-${mo[dp[1]]||'01'}-${dp[0].padStart(2,'0')}`:'';
   document.getElementById('editDate').value=isoDate;
   document.getElementById('editStart').value=t.startAddress||'';
   document.getElementById('editEnd').value=t.endAddress||'';
-  document.getElementById('editStartOdo').value=t.startOdo||'';
-  document.getElementById('editEndOdo').value=t.endOdo||'';
   document.getElementById('editPurpose').value=t.purpose||'';
   document.getElementById('editRate').value=(t.rate||0.25).toFixed(2);
+
+  // Show odo fields for tracked trips, miles field for manual trips
+  const hasOdo = t.startOdo != null && t.endOdo != null;
+  document.getElementById('editOdoFields').style.display = hasOdo ? 'grid' : 'none';
+  document.getElementById('editMilesField').style.display = hasOdo ? 'none' : 'block';
+  if(hasOdo){
+    document.getElementById('editStartOdo').value=t.startOdo||'';
+    document.getElementById('editEndOdo').value=t.endOdo||'';
+  } else {
+    document.getElementById('editMiles').value=t.miles||'';
+  }
   document.getElementById('editModal').classList.add('visible');
 }
 
@@ -1011,22 +1422,53 @@ async function saveEditTrip(){
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   const t=trips[index];if(!t)return;
   const date=document.getElementById('editDate').value;
-  const startOdo=parseFloat(document.getElementById('editStartOdo').value);
-  const endOdo=parseFloat(document.getElementById('editEndOdo').value);
   const rate=parseFloat(document.getElementById('editRate').value)||0.25;
-  if(isNaN(startOdo)||isNaN(endOdo)||endOdo<=startOdo){showToast('Check odometer readings');return;}
-  const miles=parseFloat((endOdo-startOdo).toFixed(1));
+  const hasOdo = t.startOdo != null && t.endOdo != null;
+  let miles, startOdo=null, endOdo=null;
+  if(hasOdo){
+    startOdo=parseFloat(document.getElementById('editStartOdo').value);
+    endOdo=parseFloat(document.getElementById('editEndOdo').value);
+    if(isNaN(startOdo)||isNaN(endOdo)||endOdo<=startOdo){showToast('Check odometer readings');return;}
+    miles=parseFloat((endOdo-startOdo).toFixed(1));
+  } else {
+    miles=parseFloat(parseFloat(document.getElementById('editMiles').value).toFixed(1));
+    if(isNaN(miles)||miles<=0){showToast('Please enter a valid mileage');return;}
+  }
   const dateObj=new Date(date);
   const formattedDate=dateObj.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  trips[index]={...t,date:formattedDate,startAddress:document.getElementById('editStart').value.trim()||t.startAddress,endAddress:document.getElementById('editEnd').value.trim()||t.endAddress,startOdo,endOdo,miles,rate,purpose:document.getElementById('editPurpose').value.trim()||t.purpose};
+  const updated={...t,date:formattedDate,startAddress:document.getElementById('editStart').value.trim()||t.startAddress,endAddress:document.getElementById('editEnd').value.trim()||t.endAddress,miles,rate,purpose:document.getElementById('editPurpose').value.trim()||'Not specified'};
+  if(hasOdo){updated.startOdo=startOdo;updated.endOdo=endOdo;}
+  trips[index]=updated;
   localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
   closeModal('editModal');renderTrips();renderMonthlySummary();updateTotals();
-  showToast('Trip updated');
-  if(t.id){
-    try{await dbUpdate(t.id,{date:formattedDate,start_address:trips[index].startAddress,end_address:trips[index].endAddress,start_odo:startOdo,end_odo:endOdo,miles,rate,purpose:trips[index].purpose});}
-    catch(e){showToast('Updated locally — sync when online');}
-  }
   editingTripIndex=null;
+
+  if(t.id){
+    setSyncStatus('syncing','Saving...');
+    try{
+      await dbUpdate(t.id,{date:formattedDate,start_address:updated.startAddress,end_address:updated.endAddress,start_odo:startOdo||null,end_odo:endOdo||null,miles,rate,purpose:updated.purpose});
+      setSyncStatus('ok','Saved');
+      setTimeout(()=>setSyncStatus('idle','Cloud'),3000);
+      await loadTripsFromCloud();
+      showToast('Trip updated');
+    }catch(e){
+      setSyncStatus('error','Sync failed');
+      showToast('Saved locally — cloud sync failed');
+
+    }
+  } else {
+    setSyncStatus('syncing','Saving...');
+    try{
+      const result=await dbSave(updated);
+      if(result&&result[0]&&result[0].id){trips[index].id=result[0].id;localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));}
+      setSyncStatus('ok','Saved');
+      setTimeout(()=>setSyncStatus('idle','Cloud'),3000);
+      showToast('Trip updated');
+    }catch(e){
+      setSyncStatus('error','Saved offline');
+      showToast('Saved locally - will sync when online');
+    }
+  }
 }
 
 // ── RENDER ──
@@ -1090,24 +1532,170 @@ function renderTrips(){
   }).join('')}</div>`;
 }
 
-function renderMonthlySummary(){
+let summaryYear = new Date().getFullYear();
+
+function changeYear(delta){
+  summaryYear += delta;
+  // Don't go beyond current year
+  if(summaryYear > new Date().getFullYear()) summaryYear = new Date().getFullYear();
+  renderMonthlySummary();
+}
+
+function toggleMonth(key){
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
+  const now=new Date();
+  const mo={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+
+  // Get trips for this month
+  const [year,month]=key.split('-').map(Number);
+  const monthTrips=trips.filter(t=>{
+    const d=parseDate(t.date);
+    return d.getFullYear()===year&&d.getMonth()===month-1;
+  }).sort((a,b)=>parseDate(b.date)-parseDate(a.date));
+
+  if(!monthTrips.length)return;
+
+  const totalMiles=monthTrips.reduce((s,t)=>s+t.miles,0);
+  const totalPay=monthTrips.reduce((s,t)=>s+t.miles*(t.rate||0.25),0);
+  const label=parseDate(monthTrips[0].date).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  document.getElementById('monthModalTitle').textContent=label;
+  document.getElementById('monthModalSub').textContent=`${monthTrips.length} trip${monthTrips.length!==1?'s':''}`;
+  document.getElementById('mmTotalMiles').textContent=totalMiles.toFixed(1);
+  document.getElementById('mmTotalPay').textContent='£'+totalPay.toFixed(2);
+  document.getElementById('mmTotalTrips').textContent=monthTrips.length;
+
+  document.getElementById('monthModalTrips').innerHTML=monthTrips.map(t=>{
+    const pay=(t.miles*(t.rate||0.25)).toFixed(2);
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;line-height:1.4">${t.startAddress}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">→ ${t.endAddress}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber)">${t.miles.toFixed(1)} mi</div>
+          <div style="font-size:12px;color:var(--green);margin-top:2px">£${pay}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <span style="font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:3px 10px;color:var(--muted)">📅 ${t.date}</span>
+        ${t.purpose&&t.purpose!=='Not specified'?`<span style="font-size:11px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:99px;padding:3px 10px;color:var(--amber)">${t.purpose}</span>`:''}
+        ${t.startOdo&&t.endOdo?`<span style="font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:3px 10px;color:var(--muted);font-family:var(--mono)">${t.startOdo}→${t.endOdo}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('monthModal').classList.add('visible');
+}
+
+function renderMonthlySummary(){
+  const allTrips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   const wrap=document.getElementById('monthlySummary');
-  if(!trips.length){wrap.innerHTML=`<div class="empty-state"><div class="icon">📊</div>No trips yet.</div>`;return;}
+  const yearEl=document.getElementById('summaryYear');
+  if(yearEl)yearEl.textContent=summaryYear;
+
+  const trips=allTrips.filter(t=>parseDate(t.date).getFullYear()===summaryYear);
+
+  if(!allTrips.length){
+    wrap.innerHTML=`<div class="empty-state"><div class="icon">📊</div>No trips yet.</div>`;
+    document.getElementById('yearStats').style.display='none';
+    document.getElementById('chartCard').style.display='none';
+    document.getElementById('purposeBreakdown').style.display='none';
+    return;
+  }
+
+  // ── Year stats ──
+  const yrMiles=trips.reduce((s,t)=>s+t.miles,0);
+  const yrPay=trips.reduce((s,t)=>s+t.miles*(t.rate||0.25),0);
+  const yrTrips=trips.length;
+  const yrAvg=yrTrips>0?(yrMiles/yrTrips):0;
+  document.getElementById('yrTrips').textContent=yrTrips;
+  document.getElementById('yrMiles').textContent=yrMiles.toFixed(1);
+  document.getElementById('yrPay').textContent='£'+yrPay.toFixed(0);
+  document.getElementById('yrAvg').textContent=yrAvg.toFixed(1);
+  document.getElementById('yearStats').style.display=trips.length?'grid':'none';
+
+  // ── Bar chart (12 months) ──
+  const monthData=Array.from({length:12},(_,i)=>({miles:0,pay:0,count:0}));
+  trips.forEach(t=>{const m=parseDate(t.date).getMonth();monthData[m].miles+=t.miles;monthData[m].pay+=t.miles*(t.rate||0.25);monthData[m].count++;});
+  const maxMiles=Math.max(...monthData.map(m=>m.miles),1);
+  const now=new Date();
+  const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const bars=monthData.map((m,i)=>{
+    const pct=Math.max((m.miles/maxMiles)*100,m.miles>0?4:0);
+    const isCurrent=summaryYear===now.getFullYear()&&i===now.getMonth();
+    return `<div class="bar-wrap">
+      <div class="bar ${m.miles>0?'has-data':''} ${isCurrent?'current-month':''}" style="height:${pct}%">
+        ${m.miles>0?`<div class="bar-tip">${m.miles.toFixed(1)} mi · £${m.pay.toFixed(2)}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  const labels=monthNames.map((n,i)=>{
+    const isCurrent=summaryYear===now.getFullYear()&&i===now.getMonth();
+    return `<div class="bar-month-label ${isCurrent?'current':''}">${n}</div>`;
+  }).join('');
+  document.getElementById('barChart').innerHTML=bars;
+  document.getElementById('barMonths').innerHTML=labels;
+  document.getElementById('chartCard').style.display=trips.length?'block':'none';
+
+  // ── Purpose breakdown ──
+  const purposes={};
+  trips.forEach(t=>{
+    const p=t.purpose||'Not specified';
+    if(!purposes[p])purposes[p]={miles:0,pay:0,count:0};
+    purposes[p].miles+=t.miles;purposes[p].pay+=t.miles*(t.rate||0.25);purposes[p].count++;
+  });
+  const sortedP=Object.entries(purposes).sort((a,b)=>b[1].miles-a[1].miles);
+  const maxPMiles=sortedP[0]?.[1].miles||1;
+  if(sortedP.length>0){
+    document.getElementById('purposeBreakdown').style.display='block';
+    document.getElementById('purposeList').innerHTML=sortedP.map(([name,p])=>`
+      <div class="purpose-item">
+        <div class="purpose-header">
+          <div class="purpose-name">${name}</div>
+          <div class="purpose-vals">${p.count} trip${p.count!==1?'s':''} · £${p.pay.toFixed(2)}</div>
+        </div>
+        <div class="purpose-bar-bg"><div class="purpose-bar-fill" style="width:${(p.miles/maxPMiles)*100}%"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono)">${p.miles.toFixed(1)} miles</div>
+      </div>`).join('');
+  } else {
+    document.getElementById('purposeBreakdown').style.display='none';
+  }
+
+  // ── Monthly cards ──
   const months={};
   trips.forEach(t=>{
     const d=parseDate(t.date);
     const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     const label=d.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
-    if(!months[key])months[key]={label,miles:0,pay:0,count:0};
+    if(!months[key])months[key]={label,miles:0,pay:0,count:0,trips:[]};
     months[key].miles+=t.miles;months[key].pay+=t.miles*(t.rate||0.25);months[key].count++;
+    months[key].trips.push(t);
   });
+
+  if(!Object.keys(months).length){
+    wrap.innerHTML=`<div class="empty-state"><div class="icon">📅</div>No trips in ${summaryYear}.</div>`;
+    return;
+  }
+
   const sorted=Object.entries(months).sort((a,b)=>b[0].localeCompare(a[0]));
-  wrap.innerHTML=`<div class="month-list">${sorted.map(([,m])=>`
-    <div class="month-item">
-      <div><div class="month-name">${m.label}</div><div class="month-sub">${m.count} trip${m.count!==1?'s':''}</div></div>
-      <div class="month-vals"><div class="month-miles">${m.miles.toFixed(1)} mi</div><div class="month-pay">£${m.pay.toFixed(2)}</div></div>
-    </div>`).join('')}</div>`;
+  wrap.innerHTML=sorted.map(([key,m])=>`
+    <div class="month-item" id="month-${key}" onclick="toggleMonth('${key}')">
+      <div class="month-header">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:4px">
+            <div class="month-name">${m.label}</div>
+            <span class="month-chevron">›</span>
+          </div>
+          <div class="month-sub">${m.count} trip${m.count!==1?'s':''}</div>
+        </div>
+        <div class="month-vals">
+          <div class="month-miles">${m.miles.toFixed(1)} mi</div>
+          <div class="month-pay">£${m.pay.toFixed(2)}</div>
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 async function deleteTrip(i){
@@ -1119,7 +1707,7 @@ async function deleteTrip(i){
 }
 
 // ── EXPORT ──
-function exportCSV(type){
+function exportCSV(type,monthVal){
   let trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   if(type==='range'){
     const from=document.getElementById('exportFrom').value;
@@ -1127,7 +1715,7 @@ function exportCSV(type){
     if(!from||!to){showToast('Please select a date range');return;}
     trips=trips.filter(t=>{const d=parseDate(t.date);return d>=new Date(from)&&d<=new Date(to+'T23:59:59');});
   } else if(type==='month'){
-    const month=document.getElementById('exportMonth').value;
+    const month=monthVal||document.getElementById('exportMonthInput')?.value||'';
     if(!month){showToast('Please select a month');return;}
     const [y,m]=month.split('-').map(Number);
     trips=trips.filter(t=>{const d=parseDate(t.date);return d.getFullYear()===y&&d.getMonth()===m-1;});
@@ -1142,6 +1730,34 @@ function exportCSV(type){
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('visible');}
+
+function openSettings(){
+  document.getElementById('settingsEmail').textContent=sbUser?.email||'';
+  const roleLabel=userRole==='admin'?'Administrator':'User';
+  document.getElementById('settingsRole').textContent=roleLabel;
+  const adminBtn=document.getElementById('settingsAdminBtn');
+  if(adminBtn)adminBtn.style.display=userRole==='admin'?'block':'none';
+  document.getElementById('settingsModal').classList.add('visible');
+}
+
+let currentExportType='all';
+function setExportType(type,btn){
+  currentExportType=type;
+  document.querySelectorAll('.export-type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['exportAll','exportRange','exportMonth'].forEach(id=>document.getElementById(id).style.display='none');
+  const map={all:'exportAll',range:'exportRange',month:'exportMonth'};
+  document.getElementById(map[type]).style.display='block';
+}
+
+function doExport(){
+  if(currentExportType==='month'){
+    const val=document.getElementById('exportMonthInput').value;
+    exportCSV('month',val);
+  } else {
+    exportCSV(currentExportType);
+  }
+}
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 

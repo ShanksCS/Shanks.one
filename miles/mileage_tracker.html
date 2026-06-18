@@ -467,12 +467,33 @@
 <!-- PURPOSE MODAL -->
 <div class="modal-overlay" id="purposeModal">
   <div class="modal-sheet">
-    <div class="modal-title">What was this trip for?</div>
+    <div class="modal-title">Trip details</div>
     <div class="modal-sub" id="purposeModalSub"></div>
+
+    <!-- Start site -->
+    <div class="modal-field">
+      <div class="modal-label">Start Site</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="modal-input" id="startSiteInput" type="text" placeholder="Auto-detected or search…" readonly style="flex:1;cursor:pointer;background:var(--surface2)" onclick="openSiteSearchFromModal('start')">
+        <button onclick="openSiteSearchFromModal('start')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--muted);cursor:pointer;font-size:13px;white-space:nowrap;font-family:var(--sans)">Search</button>
+      </div>
+    </div>
+
+    <!-- End site -->
+    <div class="modal-field">
+      <div class="modal-label">End Site</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="modal-input" id="endSiteInput" type="text" placeholder="Auto-detected or search…" readonly style="flex:1;cursor:pointer;background:var(--surface2)" onclick="openSiteSearchFromModal('end')">
+        <button onclick="openSiteSearchFromModal('end')" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--muted);cursor:pointer;font-size:13px;white-space:nowrap;font-family:var(--sans)">Search</button>
+      </div>
+    </div>
+
+    <!-- Purpose -->
     <div class="modal-field">
       <div class="modal-label">Purpose</div>
       <input class="modal-input" id="purposeInput" type="text" placeholder="e.g. Client visit, site survey…" maxlength="80">
     </div>
+
     <button class="modal-btn" onclick="saveTripWithPurpose()">Save Trip</button>
   </div>
 </div>
@@ -1140,10 +1161,24 @@ function filterSites(){
 }
 
 function selectSite(id, name, postcode){
-  // Keep the original GPS address — only update the site name label
   closeSiteSearch();
+
+  // If called from the purpose modal — just update the modal inputs and reopen modal
+  if(window._siteSearchFromModal){
+    window._siteSearchFromModal=false;
+    if(window._modalMode==='start'){
+      window._startSiteName=name;
+      document.getElementById('startSiteInput').value=name;
+    } else {
+      window._modalEndSiteName=name;
+      document.getElementById('endSiteInput').value=name;
+    }
+    document.getElementById('purposeModal').classList.add('visible');
+    return;
+  }
+
+  // Called from the track screen override buttons
   if(siteSearchMode==='start'){
-    // Don't overwrite startAddress — keep whatever GPS got
     window._startSiteName=name;
     setLoc('locked',`📍 ${startAddress}`);
     document.getElementById('startSiteTag').textContent='🏢 '+name;
@@ -1156,14 +1191,20 @@ function selectSite(id, name, postcode){
     }
     showToast('Start site set to: '+name);
   } else {
-    // For end — keep GPS address, just record the site name
-    // _overrideEndAddress.address='' means use GPS address when trip ends
-    window._overrideEndAddress={address:'', siteName:name};
+    window._overrideEndAddress={address:'',siteName:name};
     document.getElementById('endSiteTag').textContent='🏢 '+name;
     document.getElementById('endSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
     showToast('End site set to: '+name);
   }
+}
+
+function openSiteSearchFromModal(mode){
+  // Remember we came from the purpose modal so we can return to it
+  window._siteSearchFromModal=true;
+  window._modalMode=mode;
+  closeSiteSearch(); // reset if open
+  openSiteSearch(mode);
 }
 
 async function useSiteGPS(){
@@ -1334,6 +1375,10 @@ async function endTrip(){
     resetTripUI();
     document.getElementById('purposeModalSub').textContent=`${miles.toFixed(1)} miles · £${(miles*rate).toFixed(2)}`;
     document.getElementById('purposeInput').value='';
+    // Pre-fill site names if already detected
+    document.getElementById('startSiteInput').value=window._startSiteName||'';
+    document.getElementById('endSiteInput').value=endSiteName||'';
+    window._modalEndSiteName=endSiteName||'';
     document.getElementById('purposeModal').classList.add('visible');
     setTimeout(()=>document.getElementById('purposeInput').focus(),300);
   },()=>{document.getElementById('btnEnd').disabled=false;setLoc('error','Could not get end location');showToast('Could not get end location — try again');},{enableHighAccuracy:true,timeout:10000});
@@ -1360,12 +1405,17 @@ function resetTripUI(){
 
 function saveTripWithPurpose(){
   const p=document.getElementById('purposeInput').value.trim()||'Not specified';
-  closeModal('purposeModal');finaliseTripSave(p);
+  // Read site names from modal inputs (may have been changed by user)
+  window._startSiteName=document.getElementById('startSiteInput').value.trim()||window._startSiteName||'';
+  const finalEndSite=document.getElementById('endSiteInput').value.trim()||window._modalEndSiteName||'';
+  window._modalEndSiteName=finalEndSite;
+  closeModal('purposeModal');
+  finaliseTripSave(p, finalEndSite);
 }
 
-async function finaliseTripSave(purpose){
+async function finaliseTripSave(purpose, endSiteOverride){
   if(!pendingTripData)return;
-  const trip={...pendingTripData,purpose};pendingTripData=null;
+  const trip={...pendingTripData,purpose,startSite:window._startSiteName||pendingTripData.startSite||'',endSite:endSiteOverride||pendingTripData.endSite||''};pendingTripData=null;window._startSiteName='';window._modalEndSiteName='';
   const trips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   trips.unshift(trip);localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
   renderTrips();renderMonthlySummary();updateTotals();

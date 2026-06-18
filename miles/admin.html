@@ -10,16 +10,17 @@
   :root{
     --bg:#0F172A;--surface:#1E293B;--surface2:#293548;
     --border:rgba(255,255,255,0.08);--green:#22C55E;--green-dim:rgba(34,197,94,0.12);
-    --amber:#F59E0B;--red:#EF4444;--red-dim:rgba(239,68,68,0.12);
+    --amber:#F59E0B;--amber-dim:rgba(245,158,11,0.12);--red:#EF4444;--red-dim:rgba(239,68,68,0.12);
+    --blue:#3B82F6;--blue-dim:rgba(59,130,246,0.12);
     --text:#F1F5F9;--muted:#94A3B8;
     --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
   }
-  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 60px}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 80px}
+
+  /* ── LOGIN ── */
   .screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;width:100%;padding:32px 24px}
   .screen.visible{display:flex}
-  #adminScreen{display:none;flex-direction:column;align-items:center;width:100%}
-  #adminScreen.visible{display:flex}
-  .auth-logo{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:0.1em;color:var(--red);margin-bottom:6px}
+  .auth-logo{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:0.1em;color:var(--red);margin-bottom:6px}
   .auth-logo span{color:var(--muted);font-weight:400}
   .auth-subtitle{font-size:13px;color:var(--muted);margin-bottom:32px;text-align:center}
   .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px}
@@ -32,60 +33,127 @@
   .auth-btn:hover{background:#dc2626}
   .auth-btn:disabled{opacity:0.5;cursor:not-allowed}
   .auth-err{font-size:13px;color:var(--red);text-align:center;min-height:18px}
-  header{width:100%;padding:20px 32px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);max-width:900px}
-  .logo{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:0.08em;color:var(--red)}
+
+  /* ── APP SHELL ── */
+  #adminScreen{display:none;flex-direction:column;align-items:center;width:100%}
+  #adminScreen.visible{display:flex}
+
+  header{width:100%;max-width:1100px;padding:20px 32px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+  .logo{font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:0.08em;color:var(--red)}
   .logo span{color:var(--muted);font-weight:400}
-  .admin-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--red-dim);color:var(--red);letter-spacing:0.06em;text-transform:uppercase}
-  .header-right{display:flex;align-items:center;gap:12px}
+  .admin-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--red-dim);color:var(--red);letter-spacing:0.08em;text-transform:uppercase}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .header-email{font-size:12px;color:var(--muted)}
   .btn-signout{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;padding:6px 14px;cursor:pointer;font-family:var(--sans);transition:all 0.15s}
   .btn-signout:hover{color:var(--red);border-color:var(--red)}
-  main{width:100%;max-width:900px;padding:32px 32px 0;display:flex;flex-direction:column;gap:24px}
-  .section{display:flex;flex-direction:column;gap:16px}
-  .section-header{display:flex;align-items:center;justify-content:space-between}
-  .section-title{font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px}
-  .form-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
-  .field{display:flex;flex-direction:column;gap:6px}
+
+  /* ── NAV TABS ── */
+  .nav-bar{width:100%;max-width:1100px;display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 32px}
+  .nav-tab{font-family:var(--sans);font-size:13px;font-weight:600;padding:14px 16px;color:var(--muted);border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+  .nav-tab:hover{color:var(--text)}
+  .nav-tab.active{color:var(--text);border-bottom-color:var(--red)}
+  .nav-tab .tab-count{font-size:10px;background:var(--surface2);border-radius:99px;padding:2px 6px;margin-left:6px;color:var(--muted)}
+
+  /* ── MAIN CONTENT ── */
+  main{width:100%;max-width:1100px;padding:28px 32px 0;display:flex;flex-direction:column;gap:24px}
+  .tab-content{display:none}
+  .tab-content.active{display:flex;flex-direction:column;gap:24px}
+
+  /* ── STAT CARDS ── */
+  .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;transition:transform 0.2s}
+  .stat-card:hover{transform:translateY(-2px)}
+  .stat-val{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--amber)}
+  .stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase}
+  .stat-sub{font-size:11px;color:var(--green);margin-top:3px}
+
+  /* ── CARDS ── */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+  .card-title{font-size:14px;font-weight:600;color:var(--text)}
+  .card-sub{font-size:12px;color:var(--muted)}
+
+  /* ── FORMS ── */
+  .form-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+  .field{display:flex;flex-direction:column;gap:5px}
   .field label{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
-  .input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-family:var(--sans);color:var(--text);outline:none;width:100%;transition:border-color 0.2s}
+  .input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;font-family:var(--sans);color:var(--text);outline:none;width:100%;transition:border-color 0.2s}
   .input:focus{border-color:var(--green)}
   .input::placeholder{color:var(--muted)}
-  .btn{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+  .form-msg{font-size:12px;min-height:16px}
+  .form-msg.ok{color:var(--green)}
+  .form-msg.err{color:var(--red)}
+
+  /* ── BUTTONS ── */
+  .btn{font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;border:none;cursor:pointer;transition:all 0.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
   .btn:active{transform:scale(0.97)}
-  .btn:disabled{opacity:0.4;cursor:not-allowed}
-  .btn-green{background:var(--green);color:#0a1a0f}
-  .btn-green:hover{background:#16a34a}
-  .btn-red{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:12px;padding:6px 12px}
-  .btn-red:hover{color:var(--red);border-color:var(--red)}
-  .btn-amber{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:12px;padding:6px 12px}
-  .btn-amber:hover{color:var(--amber);border-color:var(--amber)}
-  .form-err{font-size:13px;color:var(--red);min-height:18px}
-  .form-ok{font-size:13px;color:var(--green);min-height:18px}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+  .btn-primary{background:var(--green);color:#0a1a0f}
+  .btn-primary:hover:not(:disabled){background:#16a34a}
+  .btn-danger{background:transparent;border:1px solid var(--border);color:var(--muted)}
+  .btn-danger:hover:not(:disabled){color:var(--red);border-color:var(--red)}
+  .btn-warn{background:transparent;border:1px solid var(--border);color:var(--muted)}
+  .btn-warn:hover:not(:disabled){color:var(--amber);border-color:var(--amber)}
+  .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+  .btn-secondary:hover:not(:disabled){border-color:rgba(255,255,255,0.2)}
+  .btn-blue{background:var(--blue-dim);border:1px solid rgba(59,130,246,0.25);color:var(--blue)}
+  .btn-blue:hover:not(:disabled){background:rgba(59,130,246,0.2)}
+
+  /* ── TABLES ── */
+  .table-wrap{border-radius:14px;border:1px solid var(--border);overflow:hidden}
+  .table-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
+  .table-count{font-size:12px;color:var(--muted)}
+  .table-search{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:13px;font-family:var(--sans);color:var(--text);outline:none;width:200px}
+  .table-search:focus{border-color:var(--green)}
   table{width:100%;border-collapse:collapse}
-  th{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)}
-  td{font-size:13px;padding:12px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+  th{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface);white-space:nowrap}
+  td{font-size:13px;padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
   tr:last-child td{border-bottom:none}
-  tr:hover td{background:rgba(255,255,255,0.02)}
-  .badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;letter-spacing:0.05em;text-transform:uppercase}
+  tr:hover td{background:rgba(255,255,255,0.015)}
+  .td-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+  /* ── BADGES ── */
+  .badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap}
   .badge-admin{background:var(--red-dim);color:var(--red)}
   .badge-user{background:var(--green-dim);color:var(--green)}
+  .badge-active{background:var(--green-dim);color:var(--green)}
   .badge-inactive{background:rgba(148,163,184,0.12);color:var(--muted)}
-  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px}
-  .stat-val{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--amber)}
-  .stat-label{font-size:11px;color:var(--muted);margin-top:4px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase}
-  .trips-filter{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--sans);color:var(--text);outline:none}
+
+  /* ── UPLOAD DROP ZONE ── */
+  .dropzone{border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
+  .dropzone:hover,.dropzone.drag-over{border-color:var(--blue);background:var(--blue-dim)}
+  .dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .dropzone-icon{font-size:32px;margin-bottom:8px}
+  .dropzone-title{font-size:14px;font-weight:600;color:var(--text)}
+  .dropzone-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* ── IMPORT PREVIEW ── */
+  .import-preview{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;max-height:200px;overflow-y:auto;font-size:12px;font-family:var(--mono);color:var(--muted);white-space:pre-wrap;display:none}
+
+  /* ── SELECT ── */
+  .select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px;font-family:var(--sans);color:var(--text);outline:none;cursor:pointer}
   .select:focus{border-color:var(--green)}
-  .empty{text-align:center;padding:32px;color:var(--muted);font-size:13px}
+
+  /* ── EMPTY ── */
+  .empty{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+  .empty-icon{font-size:28px;margin-bottom:8px}
+
+  /* ── TOAST ── */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:13px;font-weight:500;padding:10px 20px;border-radius:99px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:100;white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
-  @media(max-width:600px){.form-row{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .form-row{grid-template-columns:1fr}
+    main,header,.nav-bar{padding-left:16px;padding-right:16px}
+    .nav-bar{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .stats-grid .stat-card:last-child{grid-column:1/-1}
+  }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ── LOGIN ── -->
 <div class="screen visible" id="loginScreen">
   <div class="auth-logo">MILE<span>TRACK</span></div>
   <div class="auth-subtitle">Admin Panel — Authorised Access Only</div>
@@ -103,27 +171,35 @@
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ── ADMIN PANEL ── -->
 <div id="adminScreen">
   <header>
-    <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px">
       <div class="logo">MILE<span>TRACK</span></div>
       <div class="admin-badge">Admin</div>
     </div>
     <div class="header-right">
-      <span id="adminEmail" style="font-size:12px;color:var(--muted)"></span>
+      <span class="header-email" id="adminEmail"></span>
       <button class="btn-signout" onclick="adminSignOut()">Sign Out</button>
     </div>
   </header>
 
+  <!-- NAV TABS -->
+  <div class="nav-bar">
+    <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+    <button class="nav-tab" onclick="switchTab('users')">Users <span class="tab-count" id="tabCountUsers">—</span></button>
+    <button class="nav-tab" onclick="switchTab('trips')">Trips <span class="tab-count" id="tabCountTrips">—</span></button>
+    <button class="nav-tab" onclick="switchTab('sites')">Sites <span class="tab-count" id="tabCountSites">—</span></button>
+  </div>
+
   <main>
-    <!-- Stats -->
-    <div class="section">
-      <div class="section-title">Overview</div>
+
+    <!-- ── OVERVIEW TAB ── -->
+    <div class="tab-content active" id="tab-overview">
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-val" id="statUsers">—</div>
-          <div class="stat-label">Total Users</div>
+          <div class="stat-label">Active Users</div>
         </div>
         <div class="stat-card">
           <div class="stat-val" id="statTrips">—</div>
@@ -133,13 +209,28 @@
           <div class="stat-val" id="statMiles">—</div>
           <div class="stat-label">Total Miles</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statPay">—</div>
+          <div class="stat-label">Total Paid</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statSites">—</div>
+          <div class="stat-label">Sites</div>
+        </div>
+      </div>
+
+      <!-- Per-user summary -->
+      <div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Per User Summary</div>
+        <div id="userSummaryList" class="table-wrap"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
-    <!-- Create User -->
-    <div class="section">
-      <div class="section-title">Create User</div>
+    <!-- ── USERS TAB ── -->
+    <div class="tab-content" id="tab-users">
+      <!-- Create user -->
       <div class="card">
+        <div class="card-title">Create New User</div>
         <div class="form-row">
           <div class="field">
             <label>Email</label>
@@ -149,31 +240,44 @@
             <label>Password</label>
             <input class="input" id="newPassword" type="password" placeholder="Min. 8 characters">
           </div>
-          <button class="btn btn-green" onclick="createUser()">Create</button>
+          <button class="btn btn-primary" onclick="createUser()">Create</button>
         </div>
-        <div class="form-err" id="createErr"></div>
-        <div class="form-ok" id="createOk"></div>
+        <div class="form-msg" id="createMsg"></div>
       </div>
-    </div>
 
-    <!-- Users -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">Users</div>
-        <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="loadUsers()">↻ Refresh</button>
-      </div>
-      <div class="card" style="padding:0;overflow:hidden">
+      <!-- Users table -->
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <span class="table-count" id="usersCount">Loading…</span>
+          <button class="btn btn-secondary" onclick="loadUsers()">↻ Refresh</button>
+        </div>
         <div id="usersTable"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
-    <!-- Sites -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">Sites</div>
-        <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="loadSites()">↻ Refresh</button>
+    <!-- ── TRIPS TAB ── -->
+    <div class="tab-content" id="tab-trips">
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <span class="table-count" id="tripsCount">Loading…</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select class="select" id="filterUser" onchange="loadAllTrips()">
+              <option value="">All users</option>
+            </select>
+            <input class="table-search" id="tripSearch" type="text" placeholder="Search…" oninput="renderTrips()">
+            <button class="btn btn-primary" onclick="exportAllCSV()">Export CSV</button>
+          </div>
+        </div>
+        <div id="tripsTable"><div class="empty">Loading…</div></div>
       </div>
+    </div>
+
+    <!-- ── SITES TAB ── -->
+    <div class="tab-content" id="tab-sites">
+
+      <!-- Add single site -->
       <div class="card">
+        <div class="card-title">Add Site</div>
         <div class="form-row">
           <div class="field">
             <label>Site Name</label>
@@ -183,420 +287,498 @@
             <label>Postcode</label>
             <input class="input" id="newSitePostcode" type="text" placeholder="e.g. WF1 2QN" style="text-transform:uppercase">
           </div>
-          <button class="btn btn-green" onclick="createSite()">Add</button>
+          <button class="btn btn-primary" onclick="createSite()">Add</button>
         </div>
-        <div class="form-err" id="siteErr"></div>
-        <div class="form-ok" id="siteOk"></div>
+        <div class="form-msg" id="siteMsg"></div>
       </div>
-      <div class="card" style="padding:0;overflow:hidden">
+
+      <!-- Bulk CSV import -->
+      <div class="card">
+        <div class="card-title">Bulk Import from CSV</div>
+        <div class="card-sub">CSV must have two columns: <strong style="color:var(--text)">Name</strong> and <strong style="color:var(--text)">Postcode</strong>. No header row required — or include one and it will be skipped automatically.</div>
+
+        <div class="dropzone" id="dropzone">
+          <input type="file" accept=".csv,.txt" onchange="handleCSVFile(event)">
+          <div class="dropzone-icon">📂</div>
+          <div class="dropzone-title">Drop CSV file here or tap to browse</div>
+          <div class="dropzone-sub">Accepts .csv or .txt</div>
+        </div>
+
+        <div class="import-preview" id="importPreview"></div>
+
+        <div id="importSummary" style="display:none;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--green)"></div>
+
+        <div style="display:flex;gap:10px" id="importActions" style="display:none">
+          <button class="btn btn-primary" id="importBtn" onclick="importSites()" disabled>Import Sites</button>
+          <button class="btn btn-secondary" onclick="clearImport()">Clear</button>
+        </div>
+        <div class="form-msg" id="importMsg"></div>
+      </div>
+
+      <!-- Sites table -->
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <span class="table-count" id="sitesCount">Loading…</span>
+          <div style="display:flex;gap:8px">
+            <input class="table-search" id="siteSearch" type="text" placeholder="Search sites…" oninput="filterSitesTable()">
+            <button class="btn btn-secondary" onclick="loadSites()">↻ Refresh</button>
+          </div>
+        </div>
         <div id="sitesTable"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
-    <!-- All Trips -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">All Trips</div>
-        <div class="trips-filter">
-          <select class="select" id="filterUser" onchange="loadAllTrips()">
-            <option value="">All users</option>
-          </select>
-          <button class="btn btn-green" style="font-size:12px;padding:6px 14px" onclick="exportAllCSV()">Export CSV</button>
-        </div>
-      </div>
-      <div class="card" style="padding:0;overflow:hidden">
-        <div id="tripsTable"><div class="empty">Loading…</div></div>
-      </div>
-    </div>
   </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const SB_URL = 'https://skxvayqmkmwzshwdggsi.supabase.co';
-const SB_KEY = 'sb_publishable_Fx5G838ot2c-otAW3M4ofQ_2G6SMrpq';
+const SB_URL='https://skxvayqmkmwzshwdggsi.supabase.co';
+const SB_KEY='sb_publishable_Fx5G838ot2c-otAW3M4ofQ_2G6SMrpq';
+const A_TOKEN='mt_admin_token',A_REFRESH='mt_admin_refresh',A_USER='mt_admin_user';
 
-const A_TOKEN   = 'mt_admin_token';
-const A_REFRESH = 'mt_admin_refresh';
-const A_USER    = 'mt_admin_user';
+let aToken=sessionStorage.getItem(A_TOKEN);
+let aUser=JSON.parse(sessionStorage.getItem(A_USER)||'null');
+let allUsers=[],allTrips=[],allSites=[];
+let importData=[];
 
-let aToken = sessionStorage.getItem(A_TOKEN);
-let aUser  = JSON.parse(sessionStorage.getItem(A_USER)||'null');
-let allUsers = [];
-let allTrips = [];
-
-// ── AUTH ──
-async function sbAuthReq(path, body) {
-  const res=await fetch(`${SB_URL}/auth/v1/${path}`,{
-    method:'POST',
-    headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify(body)
-  });
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function sbAuthReq(path,body){
+  const res=await fetch(`${SB_URL}/auth/v1/${path}`,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
   const d=await res.json();
   if(!res.ok)throw new Error(d.error_description||d.msg||'Auth error');
   return d;
 }
-
-async function aFetch(path, opts={}, retry=true) {
+async function aFetch(path,opts={},retry=true){
   if(!aToken)throw new Error('Not authenticated');
-  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{
-    ...opts,
-    headers:{
-      'apikey':SB_KEY,
-      'Authorization':`Bearer ${aToken}`,
-      'Content-Type':'application/json',
-      'Prefer':opts.prefer||'',
-      ...opts.headers
-    }
-  });
+  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{...opts,headers:{'apikey':SB_KEY,'Authorization':`Bearer ${aToken}`,'Content-Type':'application/json','Prefer':opts.prefer||'',...opts.headers}});
   if(res.status===401&&retry){
-    const r=sessionStorage.getItem(A_REFRESH);
-    if(!r)throw new Error('Session expired');
+    const r=sessionStorage.getItem(A_REFRESH);if(!r)throw new Error('Session expired');
     const d=await sbAuthReq('token?grant_type=refresh_token',{refresh_token:r});
-    aToken=d.access_token;
-    sessionStorage.setItem(A_TOKEN,d.access_token);
+    aToken=d.access_token;sessionStorage.setItem(A_TOKEN,d.access_token);
     return aFetch(path,opts,false);
   }
   if(!res.ok)throw new Error(await res.text());
   const t=await res.text();return t?JSON.parse(t):null;
 }
 
-async function adminSignIn() {
+async function adminSignIn(){
   const email=document.getElementById('lEmail').value.trim();
   const pw=document.getElementById('lPassword').value;
-  const errEl=document.getElementById('lErr');
-  const btn=document.getElementById('lBtn');
+  const errEl=document.getElementById('lErr'),btn=document.getElementById('lBtn');
   errEl.textContent='';
   if(!email||!pw){errEl.textContent='Please enter your email and password';return;}
-
-  // Rate limit
-  const attempts=JSON.parse(sessionStorage.getItem('admin_attempts')||'[]')
-    .filter(t=>Date.now()-t<15*60*1000);
+  const attempts=JSON.parse(sessionStorage.getItem('admin_attempts')||'[]').filter(t=>Date.now()-t<15*60*1000);
   if(attempts.length>=5){errEl.textContent='Too many attempts. Please wait 15 minutes.';return;}
-
-  btn.disabled=true; btn.textContent='Signing in…';
-  try {
+  btn.disabled=true;btn.textContent='Signing in…';
+  try{
     const d=await sbAuthReq('token?grant_type=password',{email,password:pw});
-    // Verify admin role by reading profiles table directly
-    let role = null;
-    let active = false;
-    const profileRes = await fetch(
-      `${SB_URL}/rest/v1/profiles?id=eq.${d.user.id}&select=role,active`,
-      {
-        headers: {
-          'apikey': SB_KEY,
-          'Authorization': `Bearer ${d.access_token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    );
-    const profileText = await profileRes.text();
-    console.log('Profile response:', profileRes.status, profileText);
-    let profileData = [];
-    try { profileData = JSON.parse(profileText); } catch(e) {}
-
-    if (profileData && profileData.length > 0) {
-      role   = profileData[0].role;
-      active = profileData[0].active;
-    }
-
-    if (role !== 'admin') {
-      throw new Error(`Access denied. Your role is: "${role||'unknown'}". Admin required.`);
-    }
-    if (!active) {
-      throw new Error('Your account has been deactivated.');
-    }
-    aToken=d.access_token; aUser=d.user;
-    sessionStorage.setItem(A_TOKEN,d.access_token);
-    sessionStorage.setItem(A_REFRESH,d.refresh_token);
-    sessionStorage.setItem(A_USER,JSON.stringify(d.user));
+    const profileRes=await fetch(`${SB_URL}/rest/v1/profiles?id=eq.${d.user.id}&select=role,active`,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${d.access_token}`,'Content-Type':'application/json','Accept':'application/json'}});
+    const profiles=await profileRes.json();
+    if(!profiles||!profiles[0]||profiles[0].role!=='admin')throw new Error('Access denied. Admin accounts only.');
+    if(!profiles[0].active)throw new Error('Your account has been deactivated.');
+    aToken=d.access_token;aUser=d.user;
+    sessionStorage.setItem(A_TOKEN,d.access_token);sessionStorage.setItem(A_REFRESH,d.refresh_token);sessionStorage.setItem(A_USER,JSON.stringify(d.user));
     sessionStorage.setItem('admin_attempts','[]');
     enterAdmin();
-  } catch(e) {
-    attempts.push(Date.now());
-    sessionStorage.setItem('admin_attempts',JSON.stringify(attempts));
+  }catch(e){
+    const a=JSON.parse(sessionStorage.getItem('admin_attempts')||'[]');a.push(Date.now());sessionStorage.setItem('admin_attempts',JSON.stringify(a));
     errEl.textContent=e.message==='Invalid login credentials'?'Incorrect email or password':e.message;
-  } finally{btn.disabled=false;btn.textContent='Sign In to Admin';}
+  }finally{btn.disabled=false;btn.textContent='Sign In to Admin';}
 }
 
 function adminSignOut(){
-  sessionStorage.clear();
-  aToken=null; aUser=null; allUsers=[]; allTrips=[];
+  sessionStorage.clear();aToken=null;aUser=null;allUsers=[];allTrips=[];allSites=[];
   document.getElementById('adminScreen').classList.remove('visible');
   document.getElementById('loginScreen').classList.add('visible');
-  document.getElementById('lPassword').value='';
-  document.getElementById('lErr').textContent='';
+  document.getElementById('lPassword').value='';document.getElementById('lErr').textContent='';
 }
 
 function enterAdmin(){
   document.getElementById('loginScreen').classList.remove('visible');
   document.getElementById('adminScreen').classList.add('visible');
   if(aUser)document.getElementById('adminEmail').textContent=aUser.email||'';
-  loadUsers(); loadAllTrips(); loadSites();
+  loadAll();
 }
 
-// ── USERS ──
+async function loadAll(){
+  await Promise.all([loadUsers(),loadAllTrips(),loadSites()]);
+  renderOverview();
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{
+    const names=['overview','users','trips','sites'];
+    t.classList.toggle('active',names[i]===name);
+  });
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+function renderOverview(){
+  const activeUsers=allUsers.filter(u=>u.role!=='admin'&&u.active).length;
+  const totalMiles=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0),0);
+  const totalPay=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0)*(t.rate||0.25),0);
+  document.getElementById('statUsers').textContent=activeUsers;
+  document.getElementById('statTrips').textContent=allTrips.length;
+  document.getElementById('statMiles').textContent=totalMiles.toFixed(1);
+  document.getElementById('statPay').textContent='£'+totalPay.toFixed(0);
+  document.getElementById('statSites').textContent=allSites.length;
+
+  // Per-user summary
+  const userMap={};
+  allUsers.forEach(u=>{if(u.role!=='admin')userMap[u.id]={email:u.email,trips:0,miles:0,pay:0};});
+  allTrips.forEach(t=>{
+    if(userMap[t.user_id]){
+      userMap[t.user_id].trips++;
+      userMap[t.user_id].miles+=parseFloat(t.miles||0);
+      userMap[t.user_id].pay+=parseFloat(t.miles||0)*(t.rate||0.25);
+    }
+  });
+  const sorted=Object.values(userMap).sort((a,b)=>b.miles-a.miles);
+  if(!sorted.length){document.getElementById('userSummaryList').innerHTML='<div class="empty">No users yet.</div>';return;}
+  document.getElementById('userSummaryList').innerHTML=`<table>
+    <thead><tr><th>User</th><th>Trips</th><th>Miles</th><th>Earned</th></tr></thead>
+    <tbody>${sorted.map(u=>`<tr>
+      <td>${u.email}</td>
+      <td>${u.trips}</td>
+      <td style="font-family:var(--mono);color:var(--amber)">${u.miles.toFixed(1)}</td>
+      <td style="font-family:var(--mono);color:var(--green)">£${u.pay.toFixed(2)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ── USERS ─────────────────────────────────────────────────────────────────────
 async function loadUsers(){
   document.getElementById('usersTable').innerHTML='<div class="empty">Loading…</div>';
-  try {
+  try{
     const profiles=await aFetch('profiles?order=created_at.asc&select=id,email,role,active,created_at');
     allUsers=profiles||[];
+    document.getElementById('tabCountUsers').textContent=allUsers.filter(u=>u.role!=='admin').length;
+    document.getElementById('usersCount').textContent=`${allUsers.filter(u=>u.role!=='admin').length} users`;
     // Populate filter
     const filter=document.getElementById('filterUser');
     const current=filter.value;
     filter.innerHTML='<option value="">All users</option>';
     allUsers.filter(u=>u.role!=='admin').forEach(u=>{
-      const o=document.createElement('option');
-      o.value=u.id; o.textContent=u.email;
-      filter.appendChild(o);
+      const o=document.createElement('option');o.value=u.id;o.textContent=u.email;filter.appendChild(o);
     });
     filter.value=current;
-    updateStats();
-    renderUsers();
-  } catch(e){
-    document.getElementById('usersTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;
-  }
+    renderUsersTable();
+  }catch(e){document.getElementById('usersTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;}
 }
 
-function renderUsers(){
-  if(!allUsers.length){document.getElementById('usersTable').innerHTML='<div class="empty">No users found</div>';return;}
-  const rows=allUsers.map(u=>`
-    <tr>
-      <td>${u.email}</td>
-      <td><span class="badge badge-${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
-      <td><span class="badge ${u.active?'badge-user':'badge-inactive'}">${u.active?'Active':'Inactive'}</span></td>
-      <td>${new Date(u.created_at).toLocaleDateString('en-GB')}</td>
-      <td style="display:flex;gap:6px">
-        ${u.role!=='admin'?`
-          <button class="btn btn-amber" onclick="resetPassword('${u.id}','${u.email}')">Reset PW</button>
-          <button class="btn btn-amber" onclick="resetPIN('${u.email}')">Reset PIN</button>
-          <button class="btn btn-red" onclick="toggleUser('${u.id}',${u.active})">${u.active?'Deactivate':'Activate'}</button>
-        `:'<span style="color:var(--muted);font-size:12px">—</span>'}
-      </td>
-    </tr>
-  `).join('');
-  document.getElementById('usersTable').innerHTML=`
-    <table>
-      <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+function renderUsersTable(){
+  if(!allUsers.length){document.getElementById('usersTable').innerHTML='<div class="empty">No users found.</div>';return;}
+  // Get trip counts per user
+  const tripCounts={};
+  allTrips.forEach(t=>{tripCounts[t.user_id]=(tripCounts[t.user_id]||0)+1;});
+  const rows=allUsers.map(u=>`<tr>
+    <td>${u.email}</td>
+    <td><span class="badge badge-${u.role==='admin'?'admin':'user'}">${u.role}</span></td>
+    <td><span class="badge badge-${u.active?'active':'inactive'}">${u.active?'Active':'Inactive'}</span></td>
+    <td style="color:var(--muted)">${tripCounts[u.id]||0} trips</td>
+    <td>${new Date(u.created_at).toLocaleDateString('en-GB')}</td>
+    <td><div class="td-actions">${u.role!=='admin'?`
+      <button class="btn btn-warn" onclick="resetPassword('${u.id}','${u.email}')">Reset PW</button>
+      <button class="btn ${u.active?'btn-danger':'btn-primary'}" onclick="toggleUser('${u.id}',${u.active})">${u.active?'Deactivate':'Activate'}</button>
+    `:'<span style="color:var(--muted);font-size:12px">Admin</span>'}</div></td>
+  </tr>`).join('');
+  document.getElementById('usersTable').innerHTML=`<table>
+    <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Activity</th><th>Created</th><th>Actions</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
 async function createUser(){
   const email=document.getElementById('newEmail').value.trim();
   const pw=document.getElementById('newPassword').value;
-  const errEl=document.getElementById('createErr');
-  const okEl=document.getElementById('createOk');
-  errEl.textContent=''; okEl.textContent='';
-  if(!email||!pw){errEl.textContent='Please enter email and password';return;}
-  if(pw.length<8){errEl.textContent='Password must be at least 8 characters';return;}
-  try {
-    // Use Supabase Admin API via service key — we use the publishable key here
-    // so we create via auth signup then immediately set active
-    const res=await fetch(`${SB_URL}/auth/v1/admin/users`,{
-      method:'POST',
-      headers:{
-        'apikey':SB_KEY,
-        'Authorization':`Bearer ${aToken}`,
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({email,password:pw,email_confirm:true})
-    });
+  const msgEl=document.getElementById('createMsg');
+  msgEl.textContent='';msgEl.className='form-msg';
+  if(!email||!pw){msgEl.textContent='Please enter email and password';msgEl.className='form-msg err';return;}
+  if(pw.length<8){msgEl.textContent='Password must be at least 8 characters';msgEl.className='form-msg err';return;}
+  try{
+    const res=await fetch(`${SB_URL}/auth/v1/admin/users`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${aToken}`,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw,email_confirm:true})});
     const d=await res.json();
     if(!res.ok){
-      // Fallback: try signup endpoint
-      const d2=await sbAuthReq('signup',{email,password:pw});
-      okEl.textContent=`✓ Account created for ${email}`;
-      document.getElementById('newEmail').value='';
-      document.getElementById('newPassword').value='';
-      await loadUsers();
-      return;
+      // Fallback
+      await sbAuthReq('signup',{email,password:pw});
     }
-    okEl.textContent=`✓ Account created for ${email}`;
-    document.getElementById('newEmail').value='';
-    document.getElementById('newPassword').value='';
-    await loadUsers();
-  } catch(e){errEl.textContent=e.message;}
+    msgEl.textContent=`✓ Account created for ${email}`;msgEl.className='form-msg ok';
+    document.getElementById('newEmail').value='';document.getElementById('newPassword').value='';
+    await loadUsers();renderOverview();
+  }catch(e){msgEl.textContent=e.message;msgEl.className='form-msg err';}
 }
 
-async function toggleUser(id, currentlyActive){
-  const action=currentlyActive?'deactivate':'activate';
-  if(!confirm(`Are you sure you want to ${action} this user?`))return;
-  try {
-    await aFetch(`profiles?id=eq.${id}`,{
-      method:'PATCH',
-      prefer:'return=minimal',
-      body:JSON.stringify({active:!currentlyActive})
-    });
-    showToast(`User ${action}d`);
-    await loadUsers();
-  } catch(e){showToast('Error: '+e.message);}
+async function toggleUser(id,currentlyActive){
+  if(!confirm(`${currentlyActive?'Deactivate':'Activate'} this user?`))return;
+  try{
+    await aFetch(`profiles?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({active:!currentlyActive})});
+    showToast(`User ${currentlyActive?'deactivated':'activated'}`);
+    await loadUsers();renderOverview();
+  }catch(e){showToast('Error: '+e.message);}
 }
 
-async function resetPassword(id, email){
+async function resetPassword(id,email){
   if(!confirm(`Send password reset email to ${email}?`))return;
-  try {
-    await fetch(`${SB_URL}/auth/v1/recover`,{
-      method:'POST',
-      headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify({email})
-    });
+  try{
+    await fetch(`${SB_URL}/auth/v1/recover`,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email})});
     showToast(`Reset email sent to ${email}`);
-  } catch(e){showToast('Error: '+e.message);}
+  }catch(e){showToast('Error: '+e.message);}
 }
 
-function resetPIN(email){
-  if(!confirm(`Reset PIN for ${email}?\n\nThis will clear their saved PIN so they will need to set a new one next time they open the app.`))return;
-  // PINs are stored in the user's own browser localStorage under key 'mt_pin'
-  // Admin cannot directly clear another user's localStorage — but we can note it
-  // The correct flow is to ask the user to clear their browser data, or we show instructions
-  showToast('Ask the user to go to Settings > Safari > Clear History & Website Data, or use Change PIN in the app');
-  // Show a more detailed alert
-  setTimeout(()=>{
-    alert(`To reset the PIN for ${email}:\n\n1. Ask them to open MileTrack\n2. Tap "Use password instead" on the PIN screen\n3. Sign in with their email and password\n4. Tap "Change PIN" at the bottom of the app\n\nOr they can clear their browser/app storage to remove the PIN entirely.`);
-  }, 500);
-}
-
-// ── TRIPS ──
+// ── TRIPS ─────────────────────────────────────────────────────────────────────
 async function loadAllTrips(){
   document.getElementById('tripsTable').innerHTML='<div class="empty">Loading…</div>';
-  try {
+  try{
     const userId=document.getElementById('filterUser').value;
-    const path=userId
-      ?`trips?user_id=eq.${userId}&order=id.desc&limit=200`
-      :`trips?order=id.desc&limit=200`;
-    const rows=await aFetch(path+'&select=id,date,start_address,end_address,miles,rate,purpose,user_id');
+    const path=userId?`trips?user_id=eq.${userId}&order=id.desc&limit=500`:`trips?order=id.desc&limit=500`;
+    const rows=await aFetch(path+'&select=id,date,start_address,start_site,end_address,end_site,miles,rate,purpose,user_id');
     allTrips=rows||[];
-    updateStats();
-    renderTrips();
-  } catch(e){
-    document.getElementById('tripsTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;
-  }
+    document.getElementById('tabCountTrips').textContent=allTrips.length;
+    document.getElementById('tripsCount').textContent=`${allTrips.length} trips`;
+    renderTrips();renderOverview();
+  }catch(e){document.getElementById('tripsTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;}
 }
 
 function renderTrips(){
-  if(!allTrips.length){document.getElementById('tripsTable').innerHTML='<div class="empty">No trips found</div>';return;}
-  const userMap={};
-  allUsers.forEach(u=>userMap[u.id]=u.email);
-  const rows=allTrips.map(t=>{
-    const pay=(t.miles*(t.rate||0.25)).toFixed(2);
+  const q=(document.getElementById('tripSearch')?.value||'').toLowerCase();
+  let trips=allTrips;
+  if(q)trips=trips.filter(t=>(t.start_address||'').toLowerCase().includes(q)||(t.end_address||'').toLowerCase().includes(q)||(t.purpose||'').toLowerCase().includes(q)||(t.start_site||'').toLowerCase().includes(q)||(t.end_site||'').toLowerCase().includes(q));
+  if(!trips.length){document.getElementById('tripsTable').innerHTML='<div class="empty">No trips found.</div>';return;}
+  const userMap={};allUsers.forEach(u=>userMap[u.id]=u.email);
+  const rows=trips.map(t=>{
+    const pay=(parseFloat(t.miles)*(t.rate||0.25)).toFixed(2);
     return `<tr>
-      <td>${t.date}</td>
-      <td style="font-size:12px;color:var(--muted)">${userMap[t.user_id]||'Unknown'}</td>
-      <td style="font-size:12px">${t.start_address}<br><span style="color:var(--muted)">→ ${t.end_address}</span></td>
-      <td style="color:var(--amber);font-family:var(--mono);font-weight:700">${parseFloat(t.miles).toFixed(1)}</td>
-      <td style="color:var(--green);font-family:var(--mono)">£${pay}</td>
+      <td style="white-space:nowrap">${t.date}</td>
+      <td style="font-size:12px;color:var(--muted)">${userMap[t.user_id]||'—'}</td>
+      <td style="font-size:12px">
+        <div>${t.start_address||'—'}</div>
+        ${t.start_site?`<div style="color:var(--green);font-size:11px">🏢 ${t.start_site}</div>`:''}
+        <div style="color:var(--muted);margin-top:3px">→ ${t.end_address||'—'}</div>
+        ${t.end_site?`<div style="color:var(--amber);font-size:11px">🏢 ${t.end_site}</div>`:''}
+      </td>
+      <td style="font-family:var(--mono);color:var(--amber);font-weight:700;white-space:nowrap">${parseFloat(t.miles).toFixed(1)} mi</td>
+      <td style="font-family:var(--mono);color:var(--green);white-space:nowrap">£${pay}</td>
       <td style="font-size:12px;color:var(--muted)">${t.purpose||'—'}</td>
     </tr>`;
   }).join('');
-  document.getElementById('tripsTable').innerHTML=`
-    <table>
-      <thead><tr><th>Date</th><th>User</th><th>Route</th><th>Miles</th><th>£</th><th>Purpose</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  document.getElementById('tripsTable').innerHTML=`<table>
+    <thead><tr><th>Date</th><th>User</th><th>Route</th><th>Miles</th><th>£</th><th>Purpose</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
-function updateStats(){
-  const activeUsers=allUsers.filter(u=>u.role!=='admin'&&u.active).length;
-  document.getElementById('statUsers').textContent=activeUsers;
-  document.getElementById('statTrips').textContent=allTrips.length;
-  const totalMiles=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0),0);
-  document.getElementById('statMiles').textContent=totalMiles.toFixed(1);
+function exportAllCSV(){
+  if(!allTrips.length){showToast('No trips to export');return;}
+  const userMap={};allUsers.forEach(u=>userMap[u.id]=u.email);
+  const header='Date,User,Start Location,Start Site,End Location,End Site,Purpose,Miles,Rate,£';
+  const rows=allTrips.map(t=>{
+    const rate=t.rate||0.25,pay=(parseFloat(t.miles)*rate).toFixed(2);
+    return `"${t.date}","${userMap[t.user_id]||''}","${t.start_address||''}","${t.start_site||''}","${t.end_address||''}","${t.end_site||''}","${t.purpose||''}",${parseFloat(t.miles).toFixed(1)},${rate.toFixed(2)},${pay}`;
+  });
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([header,...rows].join('\n'));
+  a.download=`miletrack_admin_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();showToast('CSV exported');
 }
 
-// ── SITES ──
+// ── SITES ─────────────────────────────────────────────────────────────────────
+let sitesAll=[];
+
 async function loadSites(){
   document.getElementById('sitesTable').innerHTML='<div class="empty">Loading…</div>';
   try{
     const rows=await aFetch('sites?order=name.asc&limit=500');
-    renderSitesTable(rows||[]);
-  }catch(e){
-    document.getElementById('sitesTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;
-  }
+    allSites=rows||[];sitesAll=rows||[];
+    document.getElementById('tabCountSites').textContent=allSites.length;
+    document.getElementById('sitesCount').textContent=`${allSites.length} sites`;
+    renderSitesTable(allSites);
+  }catch(e){document.getElementById('sitesTable').innerHTML=`<div class="empty" style="color:var(--red)">${e.message}</div>`;}
+}
+
+function filterSitesTable(){
+  const q=(document.getElementById('siteSearch')?.value||'').toLowerCase();
+  const filtered=q?sitesAll.filter(s=>s.name.toLowerCase().includes(q)||(s.postcode||'').toLowerCase().includes(q)):sitesAll;
+  renderSitesTable(filtered);
 }
 
 function renderSitesTable(sites){
-  if(!sites.length){document.getElementById('sitesTable').innerHTML='<div class="empty">No sites yet.</div>';return;}
-  const rows=sites.map(s=>`
-    <tr>
-      <td>${s.name}</td>
-      <td style="font-family:var(--mono);color:var(--amber)">${s.postcode||'—'}</td>
-      <td style="display:flex;gap:6px">
-        <button class="btn btn-amber" onclick="editSite(${s.id},'${s.name.replace(/'/g,"\'")}','${(s.postcode||'').replace(/'/g,"\'")}')">Edit</button>
-        <button class="btn btn-red" onclick="deleteSite(${s.id},'${s.name.replace(/'/g,"\'")}')">Delete</button>
-      </td>
-    </tr>`).join('');
-  document.getElementById('sitesTable').innerHTML=`
-    <div style="padding:10px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">${sites.length} sites</div>
-    <table>
-      <thead><tr><th>Name</th><th>Postcode</th><th>Actions</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  if(!sites.length){document.getElementById('sitesTable').innerHTML='<div class="empty">No sites found.</div>';return;}
+  const rows=sites.map(s=>`<tr>
+    <td>${s.name}</td>
+    <td style="font-family:var(--mono);color:var(--amber)">${s.postcode||'<span style="color:var(--border);font-size:11px">No postcode</span>'}</td>
+    <td><div class="td-actions">
+      <button class="btn btn-warn" onclick="editSite(${s.id},'${s.name.replace(/'/g,"\\'")}','${(s.postcode||'').replace(/'/g,"\\'")}')">Edit</button>
+      <button class="btn btn-danger" onclick="deleteSite(${s.id},'${s.name.replace(/'/g,"\\'")}')">Delete</button>
+    </div></td>
+  </tr>`).join('');
+  document.getElementById('sitesTable').innerHTML=`<table>
+    <thead><tr><th>Name</th><th>Postcode</th><th>Actions</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
 async function createSite(){
   const name=document.getElementById('newSiteName').value.trim();
   const postcode=document.getElementById('newSitePostcode').value.trim().toUpperCase();
-  const errEl=document.getElementById('siteErr');
-  const okEl=document.getElementById('siteOk');
-  errEl.textContent='';okEl.textContent='';
-  if(!name){errEl.textContent='Please enter a site name';return;}
+  const msgEl=document.getElementById('siteMsg');
+  msgEl.textContent='';msgEl.className='form-msg';
+  if(!name){msgEl.textContent='Please enter a site name';msgEl.className='form-msg err';return;}
   try{
     await aFetch('sites',{method:'POST',prefer:'return=minimal',body:JSON.stringify({name,postcode})});
-    okEl.textContent=`✓ "${name}" added`;
-    document.getElementById('newSiteName').value='';
-    document.getElementById('newSitePostcode').value='';
+    msgEl.textContent=`✓ "${name}" added`;msgEl.className='form-msg ok';
+    document.getElementById('newSiteName').value='';document.getElementById('newSitePostcode').value='';
     await loadSites();
-  }catch(e){errEl.textContent=e.message;}
+  }catch(e){msgEl.textContent=e.message;msgEl.className='form-msg err';}
 }
 
 async function editSite(id,currentName,currentPostcode){
-  const name=prompt('Edit site name:',currentName);
-  if(name===null)return;
-  const postcode=prompt('Edit postcode:',currentPostcode);
-  if(postcode===null)return;
+  const name=prompt('Site name:',currentName);if(name===null)return;
+  const postcode=prompt('Postcode:',currentPostcode);if(postcode===null)return;
   try{
     await aFetch(`sites?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({name:name.trim(),postcode:postcode.trim().toUpperCase()})});
-    showToast('Site updated');
-    await loadSites();
+    showToast('Site updated');await loadSites();
   }catch(e){showToast('Error: '+e.message);}
 }
 
 async function deleteSite(id,name){
-  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  if(!confirm(`Delete "${name}"?`))return;
   try{
     await aFetch(`sites?id=eq.${id}`,{method:'DELETE'});
-    showToast(`"${name}" deleted`);
-    await loadSites();
+    showToast(`"${name}" deleted`);await loadSites();
   }catch(e){showToast('Error: '+e.message);}
 }
 
-function exportAllCSV(){
-  if(!allTrips.length){showToast('No trips to export');return;}
-  const userMap={};
-  allUsers.forEach(u=>userMap[u.id]=u.email);
-  const header='Date,User,Start Location,End Location,Purpose,Miles,Rate,£';
-  const rows=allTrips.map(t=>{
-    const rate=t.rate||0.25,pay=(parseFloat(t.miles)*rate).toFixed(2);
-    return `"${t.date}","${userMap[t.user_id]||''}","${t.start_address}","${t.end_address}","${t.purpose||''}",${parseFloat(t.miles).toFixed(1)},${rate.toFixed(2)},${pay}`;
-  });
-  const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([header,...rows].join('\n'));
-  a.download=`miletrack_admin_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click(); showToast('CSV exported');
+// ── BULK CSV IMPORT ───────────────────────────────────────────────────────────
+function handleCSVFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const text=ev.target.result;
+    parseCSV(text);
+  };
+  reader.readAsText(file);
 }
+
+// Also support drag and drop
+document.addEventListener('DOMContentLoaded',()=>{
+  const dz=document.getElementById('dropzone');
+  if(dz){
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('drag-over'));
+    dz.addEventListener('drop',e=>{
+      e.preventDefault();dz.classList.remove('drag-over');
+      const file=e.dataTransfer.files[0];
+      if(file){const r=new FileReader();r.onload=ev=>parseCSV(ev.target.result);r.readAsText(file);}
+    });
+  }
+});
+
+function parseCSV(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  if(!lines.length){showImportMsg('No data found in file','err');return;}
+
+  importData=[];
+  let skipped=0;
+
+  lines.forEach((line,i)=>{
+    // Support comma, tab, semicolon
+    const parts=line.split(/[\t,;]/).map(p=>p.replace(/^["']|["']$/g,'').trim());
+    if(parts.length<1||!parts[0])return;
+    const name=parts[0];
+    const postcode=(parts[1]||'').toUpperCase();
+    // Skip header rows
+    if(i===0&&(name.toLowerCase()==='name'||name.toLowerCase()==='site name'||name.toLowerCase()==='tag')){skipped++;return;}
+    if(!name){skipped++;return;}
+    importData.push({name,postcode});
+  });
+
+  if(!importData.length){showImportMsg('No valid rows found in CSV','err');return;}
+
+  // Show preview
+  const preview=document.getElementById('importPreview');
+  preview.style.display='block';
+  preview.textContent=importData.slice(0,10).map(r=>`${r.name}${r.postcode?' | '+r.postcode:''}`).join('\n')+(importData.length>10?`\n... and ${importData.length-10} more`:'');
+
+  // Show summary
+  const summary=document.getElementById('importSummary');
+  summary.style.display='block';
+  summary.textContent=`✓ ${importData.length} sites ready to import${skipped?` (${skipped} header/empty rows skipped)`:''}`;
+
+  // Show actions
+  document.getElementById('importActions').style.display='flex';
+  document.getElementById('importBtn').disabled=false;
+  document.getElementById('importMsg').textContent='';
+}
+
+async function importSites(){
+  if(!importData.length)return;
+  const btn=document.getElementById('importBtn');
+  btn.disabled=true;btn.textContent='Importing…';
+
+  // Check for duplicates against existing sites
+  const existingNames=new Set(sitesAll.map(s=>s.name.toLowerCase()));
+  const toInsert=importData.filter(s=>!existingNames.has(s.name.toLowerCase()));
+  const skippedDups=importData.length-toInsert.length;
+
+  if(!toInsert.length){
+    showImportMsg(`All ${importData.length} sites already exist — nothing imported`,'err');
+    btn.disabled=false;btn.textContent='Import Sites';return;
+  }
+
+  // Insert in batches of 50
+  let imported=0;
+  const batches=[];
+  for(let i=0;i<toInsert.length;i+=50)batches.push(toInsert.slice(i,i+50));
+
+  try{
+    for(const batch of batches){
+      await aFetch('sites',{method:'POST',prefer:'return=minimal',body:JSON.stringify(batch)});
+      imported+=batch.length;
+    }
+    showImportMsg(`✓ ${imported} sites imported successfully${skippedDups?` (${skippedDups} duplicates skipped)`:''}`, 'ok');
+    clearImport();
+    await loadSites();
+  }catch(e){
+    showImportMsg('Import failed: '+e.message,'err');
+    btn.disabled=false;btn.textContent='Import Sites';
+  }
+}
+
+function clearImport(){
+  importData=[];
+  document.getElementById('importPreview').style.display='none';
+  document.getElementById('importPreview').textContent='';
+  document.getElementById('importSummary').style.display='none';
+  document.getElementById('importActions').style.display='none';
+  document.getElementById('importBtn').disabled=true;
+  document.getElementById('importMsg').textContent='';
+  // Reset file input
+  const dz=document.getElementById('dropzone');
+  const inp=dz.querySelector('input[type=file]');
+  if(inp){inp.value='';}
+}
+
+function showImportMsg(msg,type){
+  const el=document.getElementById('importMsg');
+  el.textContent=msg;el.className='form-msg '+(type||'');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function updateStats(){renderOverview();}
 
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
+  t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// Auto-restore admin session (session storage only — clears on tab close)
-if(aToken&&aUser) enterAdmin();
-
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+if(aToken&&aUser)enterAdmin();
 document.getElementById('lPassword').addEventListener('keydown',e=>{if(e.key==='Enter')adminSignIn();});
 </script>
 </body>

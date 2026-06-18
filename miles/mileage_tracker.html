@@ -1064,12 +1064,10 @@ function normalisePostcode(pc){
 }
 
 function matchSiteByPostcode(postcode){
+  if(!postcode)return null;
   const norm=normalisePostcode(postcode);
-  // Match on outward code (first part) or full postcode
-  return sitesCache.find(s=>{
-    const sp=normalisePostcode(s.postcode);
-    return sp===norm || sp.startsWith(norm.slice(0,4));
-  });
+  // Exact full postcode match only — partial matching causes wrong site detection
+  return sitesCache.find(s=>normalisePostcode(s.postcode)===norm)||null;
 }
 
 function openSiteSearch(mode){

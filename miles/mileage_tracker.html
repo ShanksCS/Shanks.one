@@ -1140,30 +1140,29 @@ function filterSites(){
 }
 
 function selectSite(id, name, postcode){
-  // Use postcode as the address display, site name as reference
-  const address=postcode?postcode:name;
+  // Keep the original GPS address — only update the site name label
   closeSiteSearch();
   if(siteSearchMode==='start'){
-    startAddress=address;
+    // Don't overwrite startAddress — keep whatever GPS got
     window._startSiteName=name;
-    setLoc('locked',`📍 ${address}`);
+    setLoc('locked',`📍 ${startAddress}`);
     document.getElementById('startSiteTag').textContent='🏢 '+name;
     document.getElementById('startSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
     if(tracking){
       const saved=JSON.parse(localStorage.getItem(ACTIVE_KEY)||'{}');
-      saved.startAddress=address;
       saved.startSite=name;
       localStorage.setItem(ACTIVE_KEY,JSON.stringify(saved));
     }
-    showToast('Start: '+name);
+    showToast('Start site set to: '+name);
   } else {
-    window._overrideEndAddress={address,siteName:name};
-    setLoc('locked',`📍 ${address}`);
+    // For end — keep GPS address, just record the site name
+    // _overrideEndAddress.address='' means use GPS address when trip ends
+    window._overrideEndAddress={address:'', siteName:name};
     document.getElementById('endSiteTag').textContent='🏢 '+name;
     document.getElementById('endSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
-    showToast('End: '+name);
+    showToast('End site set to: '+name);
   }
 }
 
@@ -1216,7 +1215,7 @@ async function saveNewSite(name){
   // Set as selected location
   if(siteSearchMode==='start'){
     window._startSiteName=name;
-    setLoc('locked',`📍 ${startAddress||name}`);
+    setLoc('locked',`📍 ${startAddress}`);
     document.getElementById('startSiteTag').textContent='🏢 '+name;
     document.getElementById('startSiteTag').style.display='inline-block';
     document.querySelector('.location-bar').classList.add('active-loc');
@@ -1318,9 +1317,10 @@ async function endTrip(){
     let endAddress;
     let endSiteName='';
     if(window._overrideEndAddress){
-      endAddress=window._overrideEndAddress.address;
       endSiteName=window._overrideEndAddress.siteName||'';
       window._overrideEndAddress=null;
+      // Still use GPS for the actual address — site name is just a label
+      endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
     } else {
       endAddress=await reverseGeocode(pos.coords.latitude,pos.coords.longitude);
       const pcMatch=endAddress.match(/[A-Z]{1,2}\d[\dA-Z]?\s*\d[A-Z]{2}/i);

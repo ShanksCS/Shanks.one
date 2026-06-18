@@ -774,12 +774,12 @@
       <div class="bar-months" id="barMonths"></div>
     </div>
 
-    <!-- Top purpose breakdown -->
-    <div id="purposeBreakdown" style="display:none">
+    <!-- Sites breakdown -->
+    <div id="sitesBreakdown" style="display:none">
       <div class="section-title-row" style="margin-bottom:10px">
-        <div class="section-title">By Purpose</div>
+        <div class="section-title">Sites Visited</div>
       </div>
-      <div id="purposeList"></div>
+      <div id="siteVisitList"></div>
     </div>
 
     <!-- Monthly cards -->
@@ -1636,7 +1636,7 @@ function renderMonthlySummary(){
     wrap.innerHTML=`<div class="empty-state"><div class="icon">📊</div>No trips yet.</div>`;
     document.getElementById('yearStats').style.display='none';
     document.getElementById('chartCard').style.display='none';
-    document.getElementById('purposeBreakdown').style.display='none';
+    document.getElementById('sitesBreakdown').style.display='none';
     return;
   }
 
@@ -1674,28 +1674,30 @@ function renderMonthlySummary(){
   document.getElementById('barMonths').innerHTML=labels;
   document.getElementById('chartCard').style.display=trips.length?'block':'none';
 
-  // ── Purpose breakdown ──
-  const purposes={};
+  // ── Sites breakdown ──
+  const siteVisits={};
   trips.forEach(t=>{
-    const p=t.purpose||'Not specified';
-    if(!purposes[p])purposes[p]={miles:0,pay:0,count:0};
-    purposes[p].miles+=t.miles;purposes[p].pay+=t.miles*(t.rate||0.25);purposes[p].count++;
+    [t.startSite,t.endSite].forEach(s=>{
+      if(!s)return;
+      if(!siteVisits[s])siteVisits[s]={visits:0,miles:0};
+      siteVisits[s].visits++;
+      siteVisits[s].miles+=t.miles;
+    });
   });
-  const sortedP=Object.entries(purposes).sort((a,b)=>b[1].miles-a[1].miles);
-  const maxPMiles=sortedP[0]?.[1].miles||1;
-  if(sortedP.length>0){
-    document.getElementById('purposeBreakdown').style.display='block';
-    document.getElementById('purposeList').innerHTML=sortedP.map(([name,p])=>`
+  const sortedSites=Object.entries(siteVisits).sort((a,b)=>b[1].visits-a[1].visits);
+  const maxVisits=sortedSites[0]?.[1].visits||1;
+  if(sortedSites.length>0){
+    document.getElementById('sitesBreakdown').style.display='block';
+    document.getElementById('siteVisitList').innerHTML=sortedSites.map(([name,s])=>`
       <div class="purpose-item">
         <div class="purpose-header">
           <div class="purpose-name">${name}</div>
-          <div class="purpose-vals">${p.count} trip${p.count!==1?'s':''} · £${p.pay.toFixed(2)}</div>
+          <div class="purpose-vals">${s.visits} visit${s.visits!==1?'s':''} · ${s.miles.toFixed(1)} mi</div>
         </div>
-        <div class="purpose-bar-bg"><div class="purpose-bar-fill" style="width:${(p.miles/maxPMiles)*100}%"></div></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono)">${p.miles.toFixed(1)} miles</div>
+        <div class="purpose-bar-bg"><div class="purpose-bar-fill" style="width:${(s.visits/maxVisits)*100}%"></div></div>
       </div>`).join('');
   } else {
-    document.getElementById('purposeBreakdown').style.display='none';
+    document.getElementById('sitesBreakdown').style.display='none';
   }
 
   // ── Monthly cards ──
@@ -1757,7 +1759,10 @@ function exportCSV(type,monthVal){
   }
   if(!trips.length){showToast('No trips found for that period');return;}
   const header='Date,Start Location,Start Site,End Location,End Site,Purpose,Mileage,Mile,£';
-  const rows=trips.map(t=>{const r=t.rate||0.25,p=(t.miles*r).toFixed(2);return `"${t.date}","${t.startAddress}","${t.endAddress}","${t.purpose||''}",${t.miles.toFixed(1)},${r.toFixed(2)},${p}`;});
+  const rows=trips.map(t=>{
+    const r=t.rate||0.25,p=(t.miles*r).toFixed(2);
+    return `"${t.date}","${t.startAddress||''}","${t.startSite||''}","${t.endAddress||''}","${t.endSite||''}","${t.purpose||''}",${t.miles.toFixed(1)},${r.toFixed(2)},${p}`;
+  });
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent([header,...rows].join('\n'));
   a.download=`mileage_${type}_${new Date().toISOString().slice(0,10)}.csv`;

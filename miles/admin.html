@@ -419,7 +419,7 @@ function switchTab(name){
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
 function renderOverview(){
-  const activeUsers=allUsers.filter(u=>u.role!=='admin'&&u.active).length;
+  const activeUsers=allUsers.filter(u=>u.active).length||1; // At least 1 (current admin)
   const totalMiles=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0),0);
   const totalPay=allTrips.reduce((s,t)=>s+parseFloat(t.miles||0)*(t.rate||0.25),0);
   document.getElementById('statUsers').textContent=activeUsers;
@@ -428,22 +428,28 @@ function renderOverview(){
   document.getElementById('statPay').textContent='£'+totalPay.toFixed(0);
   document.getElementById('statSites').textContent=allSites.length;
 
-  // Per-user summary
+  // Per-user summary — include ALL users including admin
   const userMap={};
-  allUsers.forEach(u=>{if(u.role!=='admin')userMap[u.id]={email:u.email,trips:0,miles:0,pay:0};});
+  allUsers.forEach(u=>userMap[u.id]={email:u.email,role:u.role,trips:0,miles:0,pay:0});
+  // Also include current admin even if not in allUsers yet
+  if(!userMap[aUser?.id]&&aUser){userMap[aUser.id]={email:aUser.email,role:'admin',trips:0,miles:0,pay:0};}
   allTrips.forEach(t=>{
     if(userMap[t.user_id]){
       userMap[t.user_id].trips++;
       userMap[t.user_id].miles+=parseFloat(t.miles||0);
       userMap[t.user_id].pay+=parseFloat(t.miles||0)*(t.rate||0.25);
+    } else {
+      // Trip belongs to a user not in profiles yet — add placeholder
+      userMap[t.user_id]={email:'Unknown ('+t.user_id.slice(0,8)+'…)',role:'user',trips:1,miles:parseFloat(t.miles||0),pay:parseFloat(t.miles||0)*(t.rate||0.25)};
     }
   });
-  const sorted=Object.values(userMap).sort((a,b)=>b.miles-a.miles);
+  const sorted=Object.values(userMap).filter(u=>u.trips>0||true).sort((a,b)=>b.miles-a.miles);
   if(!sorted.length){document.getElementById('userSummaryList').innerHTML='<div class="empty">No users yet.</div>';return;}
   document.getElementById('userSummaryList').innerHTML=`<table>
-    <thead><tr><th>User</th><th>Trips</th><th>Miles</th><th>Earned</th></tr></thead>
+    <thead><tr><th>User</th><th>Role</th><th>Trips</th><th>Miles</th><th>Earned</th></tr></thead>
     <tbody>${sorted.map(u=>`<tr>
       <td>${u.email}</td>
+      <td><span class="badge badge-${u.role==='admin'?'admin':'user'}">${u.role||'user'}</span></td>
       <td>${u.trips}</td>
       <td style="font-family:var(--mono);color:var(--amber)">${u.miles.toFixed(1)}</td>
       <td style="font-family:var(--mono);color:var(--green)">£${u.pay.toFixed(2)}</td>

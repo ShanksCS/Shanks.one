@@ -1037,7 +1037,7 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>{const names=['track','log','summary','export'];t.classList.toggle('active',names[i]===name);});
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(name==='log'||name==='summary'||name==='export'){loadSortPref();const cached=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');if(cached.length)renderTrips();}
+  if(name==='log'||name==='summary'||name==='export'){loadSortPref();renderTrips();}
   if(name==='summary')renderMonthlySummary();
 }
 function enterApp(){
@@ -1092,8 +1092,8 @@ async function loadTripsFromCloud(){
   // Only show skeleton if no cached data
   const wrap=document.getElementById('tripListWrap');
   const cached=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
-  if(!cached.length&&wrap)wrap.innerHTML='<div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>';
-  else if(cached.length)renderTrips(); // Show cached data immediately while syncing
+  if(cached.length)renderTrips(); // Show cached data immediately while syncing
+  else if(wrap)wrap.innerHTML='<div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>';
   try{
     const trips=await dbLoad();
     localStorage.setItem(TRIPS_KEY,JSON.stringify(trips));
@@ -1743,14 +1743,17 @@ function renderTrips(){
   updateTotals();
   const allTripsRaw=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   const wrap=document.getElementById('tripListWrap');
-
-  // If no data in localStorage at all, keep skeleton until cloud loads
-  if(!allTripsRaw.length && wrap.querySelector('.skeleton-trip')){return;}
-
   const trips=getFilteredTrips();
   const countEl=document.getElementById('tripCountLabel');
   if(countEl){countEl.textContent=trips.length===allTripsRaw.length?`${allTripsRaw.length}`:`${trips.length} of ${allTripsRaw.length}`;}
-  if(!trips.length){wrap.innerHTML=`<div class="empty-state"><div class="icon">🚗</div>No trips found.</div>`;return;}
+  if(!trips.length){
+    if(!allTripsRaw.length){
+      wrap.innerHTML='<div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>';
+    } else {
+      wrap.innerHTML=`<div class="empty-state"><div class="icon">🚗</div>No trips found.</div>`;
+    }
+    return;
+  }
   const allTrips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   wrap.innerHTML=`<div class="trip-list">${trips.map(t=>{
     const i=allTrips.findIndex(x=>x.id===t.id);

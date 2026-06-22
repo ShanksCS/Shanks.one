@@ -181,6 +181,10 @@
   .month-pay{font-size:12px;color:var(--green);margin-top:2px}
 
   /* SEARCH */
+
+  .sort-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;font-family:var(--sans);color:var(--text);outline:none;cursor:pointer;transition:border-color 0.2s;-webkit-appearance:none;appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394A3B8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+  .sort-select:focus{border-color:var(--green)}
+
   .search-row{display:flex;gap:8px;align-items:center}
   .search-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-family:var(--sans);color:var(--text);outline:none}
   .search-input:focus{border-color:var(--green)}
@@ -388,23 +392,23 @@
   /* SITE SEARCH */
   .site-search-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:flex;align-items:flex-start;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity 0.2s;padding-top:env(safe-area-inset-top,0)}
   .site-search-overlay.visible{opacity:1;pointer-events:all}
-  .site-search-sheet{background:var(--surface);border-radius:0 0 20px 20px;padding:16px 16px 20px;width:100%;max-width:480px;transform:translateY(-20px);transition:transform 0.25s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;gap:10px;height:auto;max-height:60vh}
+  .site-search-sheet{background:var(--surface);border-radius:0 0 20px 20px;padding:14px 16px 16px;width:100%;max-width:480px;transform:translateY(-20px);transition:transform 0.25s cubic-bezier(0.34,1.2,0.64,1);display:flex;flex-direction:column;gap:8px;height:auto;max-height:55vh;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
   .site-search-overlay.visible .site-search-sheet{transform:translateY(0)}
   .site-search-title{font-size:15px;font-weight:600;color:var(--text)}
   .site-search-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;font-family:var(--sans);color:var(--text);outline:none;width:100%}
   .site-search-input:focus{border-color:var(--green)}
   .site-search-input::placeholder{color:var(--muted)}
   .site-results{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:4px;min-height:0}
-  .site-result{padding:12px 14px;border-radius:10px;cursor:pointer;transition:background 0.15s;border:1px solid transparent}
-  .site-result:hover,.site-result:active{background:var(--surface2);border-color:var(--border)}
-  .site-result-name{font-size:14px;font-weight:600;color:var(--text)}
-  .site-result-postcode{font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+  .site-result{padding:10px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;border:1px solid transparent}
+  .site-result:hover,.site-result:active{background:var(--surface2);border-color:rgba(34,197,94,0.2)}
+  .site-result-name{font-size:13px;font-weight:600;color:var(--text)}
+  .site-result-postcode{font-size:11px;color:var(--muted);font-family:var(--mono)}
   .site-result-match{color:var(--green)}
-  .site-use-gps{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);margin-top:4px;transition:background 0.15s}
+  .site-use-gps{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;background:var(--green-dim);border:1px solid rgba(34,197,94,0.2);transition:background 0.15s}
   .site-use-gps:hover{background:rgba(34,197,94,0.18)}
   .site-use-gps-label{font-size:14px;font-weight:600;color:var(--green)}
   .site-use-gps-sub{font-size:11px;color:var(--muted);margin-top:1px}
-  .site-save-new{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);transition:background 0.15s}
+  .site-save-new{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;cursor:pointer;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);transition:background 0.15s}
   .site-save-new:hover{background:rgba(59,130,246,0.15)}
   .site-save-new-label{font-size:14px;font-weight:600;color:var(--blue)}
   .override-btn{font-size:11px;font-weight:600;color:var(--muted);background:transparent;border:1px dashed var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:var(--sans);transition:all 0.15s;margin-top:4px;align-self:flex-start}
@@ -751,8 +755,23 @@
       <input class="date-input" id="filterTo" type="date" onchange="renderTrips()">
     </div>
     <div class="section-title-row">
-      <div class="section-title">Trips</div>
-      <button class="btn-text muted" onclick="clearFilters()" style="font-size:11px">Clear filters</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="section-title">Trips</div>
+        <span id="tripCountLabel" style="font-size:11px;color:var(--muted)"></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <select class="sort-select" id="sortSelect" onchange="saveSortPref();renderTrips()">
+          <option value="date-desc">Newest first</option>
+          <option value="date-asc">Oldest first</option>
+          <option value="miles-desc">Most miles</option>
+          <option value="miles-asc">Fewest miles</option>
+          <option value="pay-desc">Highest £</option>
+          <option value="pay-asc">Lowest £</option>
+          <option value="site-asc">Site A–Z</option>
+          <option value="purpose-asc">Purpose A–Z</option>
+        </select>
+        <button class="btn-text muted" onclick="clearFilters()" style="font-size:11px">Clear</button>
+      </div>
     </div>
     <div id="tripListWrap">
       <div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div><div class="skeleton skeleton-trip"></div>
@@ -1036,7 +1055,7 @@ function enterApp(){
       }
     }).catch(()=>{});
   }
-  loadRate();loadTripsFromCloud();restoreActiveTrip();
+  loadRate();loadSortPref();loadTripsFromCloud();restoreActiveTrip();
   loadSites();
   // Set default export dates
   const today=new Date().toISOString().slice(0,10);
@@ -1133,9 +1152,8 @@ function filterSites(){
 
   // GPS option always at top
   html+=`<div class="site-use-gps" onclick="useSiteGPS()">
-    <div style="font-size:20px">📡</div>
-    <div><div class="site-use-gps-label">Use my current GPS location</div>
-    <div class="site-use-gps-sub">Auto-detect address</div></div>
+    <div style="font-size:16px">📡</div>
+    <div><div class="site-use-gps-label">Use current GPS location</div><div class="site-use-gps-sub">Auto-detect address</div></div>
   </div>`;
 
   // Matching sites
@@ -1293,12 +1311,14 @@ async function saveCurrentAddressAsSite(){
 
 async function saveNewSite(name){
   closeSiteSearch();
+  // Ask for a postcode
+  const postcode=(prompt(`Enter postcode for "${name}" (or leave blank):`,'')||'').trim().toUpperCase();
   // Save to Supabase
   try{
     const res=await sbFetch('sites?select=id,name,postcode',{
       method:'POST',
       prefer:'return=representation',
-      body:JSON.stringify({name,postcode:''})
+      body:JSON.stringify({name,postcode})
     });
     if(res&&res[0]){
       sitesCache.push(res[0]);
@@ -1306,11 +1326,22 @@ async function saveNewSite(name){
     }
     showToast(`"${name}" saved to sites`);
   }catch(e){
-    // Save locally even if cloud fails
-    sitesCache.push({id:Date.now(),name,postcode:''});
+    sitesCache.push({id:Date.now(),name,postcode});
     showToast(`"${name}" saved locally`);
   }
-  // Set as selected location
+  // Set as selected site
+  if(window._siteSearchFromModal){
+    window._siteSearchFromModal=false;
+    if(window._modalMode==='start'){
+      window._startSiteName=name;
+      document.getElementById('startSiteInput').value=name;
+    } else {
+      window._modalEndSiteName=name;
+      document.getElementById('endSiteInput').value=name;
+    }
+    document.getElementById('purposeModal').classList.add('visible');
+    return;
+  }
   if(siteSearchMode==='start'){
     window._startSiteName=name;
     setLoc('locked',`📍 ${startAddress}`);
@@ -1626,10 +1657,45 @@ function getFilteredTrips(){
   const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
   const from=document.getElementById('filterFrom')?.value;
   const to=document.getElementById('filterTo')?.value;
-  if(search)trips=trips.filter(t=>(t.purpose||'').toLowerCase().includes(search)||(t.startAddress||'').toLowerCase().includes(search)||(t.endAddress||'').toLowerCase().includes(search));
+  const sort=document.getElementById('sortSelect')?.value||localStorage.getItem(SORT_KEY)||'date-desc';
+
+  if(search)trips=trips.filter(t=>
+    (t.purpose||'').toLowerCase().includes(search)||
+    (t.startAddress||'').toLowerCase().includes(search)||
+    (t.endAddress||'').toLowerCase().includes(search)||
+    (t.startSite||'').toLowerCase().includes(search)||
+    (t.endSite||'').toLowerCase().includes(search)
+  );
   if(from)trips=trips.filter(t=>parseDate(t.date)>=new Date(from));
   if(to)trips=trips.filter(t=>parseDate(t.date)<=new Date(to+'T23:59:59'));
+
+  // Sort
+  trips.sort((a,b)=>{
+    switch(sort){
+      case 'date-desc': return parseDate(b.date)-parseDate(a.date);
+      case 'date-asc':  return parseDate(a.date)-parseDate(b.date);
+      case 'miles-desc':return b.miles-a.miles;
+      case 'miles-asc': return a.miles-b.miles;
+      case 'pay-desc':  return (b.miles*(b.rate||0.25))-(a.miles*(a.rate||0.25));
+      case 'pay-asc':   return (a.miles*(a.rate||0.25))-(b.miles*(b.rate||0.25));
+      case 'site-asc':  return (a.startSite||a.startAddress||'').localeCompare(b.startSite||b.startAddress||'');
+      case 'purpose-asc':return (a.purpose||'').localeCompare(b.purpose||'');
+      default:          return parseDate(b.date)-parseDate(a.date);
+    }
+  });
+
   return trips;
+}
+
+function saveSortPref(){
+  const v=document.getElementById('sortSelect')?.value;
+  if(v)localStorage.setItem(SORT_KEY,v);
+}
+
+function loadSortPref(){
+  const saved=localStorage.getItem(SORT_KEY)||'date-desc';
+  const sel=document.getElementById('sortSelect');
+  if(sel)sel.value=saved;
 }
 
 function clearFilters(){
@@ -1657,6 +1723,8 @@ function renderTrips(){
   updateTotals();
   const trips=getFilteredTrips();
   const wrap=document.getElementById('tripListWrap');
+  const countEl=document.getElementById('tripCountLabel');
+  if(countEl){const total=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]').length;countEl.textContent=trips.length===total?`${total}`:`${trips.length} of ${total}`;}
   if(!trips.length){wrap.innerHTML=`<div class="empty-state"><div class="icon">🚗</div>No trips found.</div>`;return;}
   const allTrips=JSON.parse(localStorage.getItem(TRIPS_KEY)||'[]');
   wrap.innerHTML=`<div class="trip-list">${trips.map(t=>{

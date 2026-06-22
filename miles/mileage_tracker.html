@@ -761,14 +761,22 @@
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <select class="sort-select" id="sortSelect" onchange="saveSortPref();renderTrips()">
-          <option value="date-desc">Newest first</option>
-          <option value="date-asc">Oldest first</option>
-          <option value="miles-desc">Most miles</option>
-          <option value="miles-asc">Fewest miles</option>
-          <option value="pay-desc">Highest £</option>
-          <option value="pay-asc">Lowest £</option>
-          <option value="site-asc">Site A–Z</option>
-          <option value="purpose-asc">Purpose A–Z</option>
+          <optgroup label="Date">
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+          </optgroup>
+          <optgroup label="Miles">
+            <option value="miles-desc">Most miles</option>
+            <option value="miles-asc">Fewest miles</option>
+          </optgroup>
+          <optgroup label="Earnings">
+            <option value="pay-desc">Highest £</option>
+            <option value="pay-asc">Lowest £</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option value="site-asc">Site A–Z</option>
+            <option value="purpose-asc">Purpose A–Z</option>
+          </optgroup>
         </select>
         <button class="btn-text muted" onclick="clearFilters()" style="font-size:11px">Clear</button>
       </div>
@@ -1029,7 +1037,7 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach((t,i)=>{const names=['track','log','summary','export'];t.classList.toggle('active',names[i]===name);});
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if(name==='log'||name==='summary'||name==='export')renderTrips();
+  if(name==='log'||name==='summary'||name==='export'){loadSortPref();renderTrips();}
   if(name==='summary')renderMonthlySummary();
 }
 function enterApp(){
@@ -1657,7 +1665,8 @@ function getFilteredTrips(){
   const search=(document.getElementById('searchInput')?.value||'').toLowerCase();
   const from=document.getElementById('filterFrom')?.value;
   const to=document.getElementById('filterTo')?.value;
-  const sort=document.getElementById('sortSelect')?.value||localStorage.getItem(SORT_KEY)||'date-desc';
+  const sortEl=document.getElementById('sortSelect');
+  const sort=(sortEl&&sortEl.value?sortEl.value:null)||localStorage.getItem(SORT_KEY)||'date-desc';
 
   if(search)trips=trips.filter(t=>
     (t.purpose||'').toLowerCase().includes(search)||
@@ -1695,7 +1704,11 @@ function saveSortPref(){
 function loadSortPref(){
   const saved=localStorage.getItem(SORT_KEY)||'date-desc';
   const sel=document.getElementById('sortSelect');
-  if(sel)sel.value=saved;
+  if(sel){
+    sel.value=saved;
+    // Verify the option actually exists, fallback to date-desc
+    if(sel.value!==saved)sel.value='date-desc';
+  }
 }
 
 function clearFilters(){
